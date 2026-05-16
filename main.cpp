@@ -5,219 +5,469 @@
 #include "srcs/cosine.tpp"
 #include "srcs/cross_product.tpp"
 #include "srcs/linear_combination.tpp"
-#include "srcs/linear_interpolation.tpp"
+#include "srcs/linera_interpolation.tpp"
 
-int main()
-{
-    std::cout << BIWHITE << "test 1: /* * * EMPTY VECTORS AND MATRICES * * */\n\n" << RESET;
-    try {
-        Vector<float> u{};
-    }
-    catch (std::length_error& e) {
-        std::cerr << RED << e.what() << RESET << "\n";
-    }
-    try {
-        Matrix<float> u{{}, {}};
-    }
-    catch (std::length_error& e) {
-        std::cerr << RED << e.what() << RESET << "\n";
-    }
-    std::cout << BIWHITE << "\ntest 2: /* * * MATRICES NOT RECTANGULAR * * */\n\n" << RESET;
-    try {
-        Matrix<float> u{{1., 5., 3.}, {0., 5.}};
-    }
-    catch (std::length_error& e ) {
-        std::cerr << RED << e.what() << RESET << "\n";
-    }
-    std::cout << BIWHITE << "\ntest 3: / * * * TEST EX00 * * */\n\n" << RESET;
-    std::cout << BIRED << "/* * * testing error on number of elements and shape* * */\n\n" << RESET;
-    try {
-        Vector<float> u{0., 0., 0.};
-        Vector<float> v{0., 0.};
+#include <unordered_map>
+#include <functional>
 
+static void test_ex00() {
+    
+    std::cout << BIWHITE << "/* * * TEST EX00 (add, subtract, scale) * * */\n\n" << RESET;
+
+    //test 1
+    try {
+        Vector<float> u{2.f, 3.f};
+        Vector<float> v{5.f, 7.f};
         u.add(v);
         u.print();
     }
-    catch (std::length_error& e) {
-        std::cerr << RED << e.what() << RESET << "\n";
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << RESET;
+    }
+    std::cout << "\n";
+    //test 2
+    try {
+        Vector<float> u{2.f, 3.f};
+        Vector<float> v{5.f, 7.f};
+        u.sub(v);
+        u.print();
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << RESET;
+    }
+    std::cout << "\n";
+    //test 3
+    try {
+        Vector<float> u{2.f, 3.f};
+        u.scl(2.f);
+        u.print();
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << RESET;
+    }
+    std::cout << "\n";
+    //test 4
+    try {
+        Vector<float> u{2.f, 3.f};
+        Vector<float> v{5.f, 7.f, 2.3f};
+        u.add(v);
+        u.print();
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+}
+
+static void test_ex01() {
+    
+    std::cout << BIWHITE << "/* * * TEST EX01 (linear combination) * * */\n\n" << RESET;
+
+    //test 1
+    try {
+        std::vector<Vector<float>> v1 = {
+            Vector<float> {2.f, 3.f, 4.f},
+            Vector<float> {6.f, -7.f, 8.f},
+            Vector<float> {5.f, 0.f, -3.f},
+        };
+        std::vector<float> c1 {2.f, 7.f, -1.f};
+
+        print_linear_combination_info(v1, c1);
+        std::cout << "\n";
+        Vector<float> e1 = linear_combination(v1, c1);
+
+        e1.print();
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << "\n";
+    //test 2
+    try {
+        std::vector<Vector<float>> v2 = {
+            Vector<float> {1.f, 0.f,  0.f},
+            Vector<float> {0.f, 1.f,  0.f},
+            Vector<float> {0.f, 0.f,  1.f},
+        };
+        std::vector<float> c2{1.f, 2.f, 3.f};
+        std::vector<float> c3{0.f, 10.f, -100.f};
+
+        Vector<float> e2 = linear_combination(v2, c2);
+        Vector<float> e3 = linear_combination(v2, c3);
+
+        e2.print();
+        std::cout << "\n";
+        e3.print();
+
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << "\n";
+    //test 3
+    try {
+        std::vector<Vector<float>> v3 = {
+            Vector<float> {1.f, 0.f,  0.f},
+            Vector<float> {0.f, 1.f,  0.f},
+            Vector<float> {0.f, 0.f,  1.f},
+        };
+        std::vector<float> c4{1.f, 2.f, 3.f, 4.5f};
+
+        Vector<float> e4 = linear_combination(v3, c4);
+
+        e4.print();
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+}
+
+static void test_ex02() {
+    
+    std::cout << BIWHITE << "/* * * TEST EX02 (lerp) * * */\n\n" << RESET;
+
+    //test 1
+    try {
+        float r1 = lerp(0.f, 1.f, 0.f);
+
+        std::cout << r1 << "\n";
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
     }
     try {
-        Matrix<float> u{{0., 0., 0.}, {0., 0., 0.}};
-        Matrix<float> v{{0., 0.}, {0., 0.}, {0., 0.}};
+        float r2 = lerp(0.f, 1.f, 1.f);
 
-        u.add(v);
+        std::cout << r2 << "\n";
     }
-    catch (std::length_error& e) {
-        std::cerr << RED << e.what() << RESET << "\n";
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
     }
-    {
-        //for Vectors//
-        std::cout << BIWHITE << "\n/* * * VECTOR * * */" << RESET << "\n";
-        Vector<float> u{2., 3.};
-        Vector<float> v{5., 7.};
+    try {
+        float r3 = lerp(0.f, 1.f, 0.f);
 
-        Vector<float> i{4., -8.};
-        Vector<float> j{-3., 1.};
-
-        Vector<float> k{7., 4., 3.};
-        {
-            std::cout << "calling add method\n";
-            u.add(v);
-            i.add(j);
-            u.print();
-            i.print();
-        }
-        {
-            std::cout << "calling sub method\n";
-            u.sub(v);
-            u.print();
-            i.sub(j);
-            i.print();
-        }
-        {
-            std::cout << "calling scl method\n";
-            u.scl(-4.);
-            u.print();
-            k.scl(2.);
-            k.print();
-        }
+        std::cout << r3 << "\n";
     }
-    {
-        //for Matrices
-        std::cout << BIWHITE << "\n/* * * MATRICES * * */" << RESET << "\n";
-        Matrix<float> u{{2., 3.}, {0., -5.}};
-        Matrix<float> v{{5., 7.}, {9., 3.}};
-
-        Matrix<float> i{{4., -8.}};
-        Matrix<float> j{{-3., 1.}};
-
-        Matrix<float> k{{7., 4., 3.}};
-
-        {
-            std::cout << "calling add method\n";
-            u.add(v);
-            i.add(j);
-            u.print();
-            i.print();
-        }
-        {
-            std::cout << "calling sub method\n";
-            u.sub(v);
-            u.print();
-            i.sub(j);
-            i.print();
-        }
-        {
-            std::cout << "calling scl method\n";
-            u.scl(-4.);
-            u.print();
-            k.scl(2.);
-            k.print();
-        }
-    }
-    std::cout << BIWHITE << "\ntest 3: / * * * TEST EX01 (linear combination) * * */\n\n" << RESET;
-    std::cout << BIRED << "/* * * testing error on number of elements* * */\n\n" << RESET;
-    { 
-        // u got wrong size
-        std::vector<Vector<float>> u = {
-            Vector<float>({1.2, 3., 6.}),
-            Vector<float>({0.3, 4., 2.}),
-            Vector<float>({1., 5.2, 0., 4}),
-        };     
-        std::vector<float> c = {12., -6., 0.5};
-        std::cout << BIWHITE << "test 1: u got wrong size\n" << RESET;
-        try {
-            Vector<float> result = linear_combination(u, c);
-            std::cout << NGREEN << "/* * * Print result * * */\n";
-            std::cout << GREEN;
-            result.print();
-            std::cout << RESET;
-        }
-        catch(std::length_error& e) {
-            std::cerr << RED << e.what() << RESET << std::endl;
-        }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << "\n";
-    { // coefs and u not the same size
-        std::vector<Vector<float>> u = {
-            Vector<float>({1.2, 3., 6.}),
-            Vector<float>({0.3, 4., 2.}),
-            Vector<float>({1., 5.2, 0.}),
-        };
-        std::vector<float> c = {12., -6., 0.5, 10.};
-        std::cout << BIWHITE << "test 2: coefs.size() > u[0].size()\n" << RESET;
-        try {
-            Vector<float> result = linear_combination(u, c);
-            std::cout << NGREEN << "/* * * Print result * * */\n";
-            std::cout << GREEN;
-            result.print();
-            std::cout << RESET;
-        }
-        catch(std::length_error& e) {
-            std::cerr << RED << e.what() << RESET << std::endl;
-        }
+    //test 2
+    try {
+        Vector<float> v1{2.f, 1.f};
+        Vector<float> v2{4.f, 2.f};
+
+        Vector<float> r1 = lerp(v1, v2, 0.3f);
+
+        r1.print();
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << "\n";
-    {
-        std::vector<Vector<float>> u = {
-            Vector<float>({1.0002, 34444., 777776.}),
-            Vector<float>({0.3, 4., 2.}),
-            Vector<float>({1., 5.2, 0.}),
-        };
-        std::vector<float> c = {12., -6., 0.5};
-        std::cout << BIWHITE << "test 3:\n" << RESET;
-        try {
-            print_linear_combination_info(u, c);
-            Vector<float> result = linear_combination(u, c);
-            std::cout << NGREEN << "\n/* * * Print result * * */\n\n";
-            std::cout << GREEN;
-            result.print();
-            std::cout << RESET;
-        }
-        catch(std::length_error& e) {
-            std::cerr << RED << e.what() << RESET << std::endl;
-        }
+    //test 3
+    try {
+        Matrix<float> m1{{2.f, 1.f}, {3.f, 4.f}};
+        Matrix<float> m2{{20.f, 10.f}, {30.f, 40.f}};
+
+        Matrix<float> m3 = lerp(m1, m2, 0.5f);
+
+        m3.print();
     }
-    std::cout << "\n";
-    { // subject
-        std::vector<Vector<float>> u = {
-            Vector<float>({1., 0., 0.}),
-            Vector<float>({0., 1., 0.}),
-            Vector<float>({0., 0., 1.}),
-        };
-        std::cout << BIWHITE << "test 4:\n" << RESET;
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+}
 
+static void test_ex03() {
 
-        std::vector<float> c1 = {1., 2., 3.};
-        std::vector<float> c2 = {0., 10., -100.};
+    std::cout << BIWHITE << "/* * * TEST EX03 (dot product) * * */\n\n" << RESET;
 
-        print_linear_combination_info(u, c2);
-        try {
-            Vector<float> r1 = linear_combination(u, c1);
-            print_linear_combination_info(u, c1);
-            std::cout << NGREEN << "\n/* * * Print result * * */\n\n";
-            std::cout << GREEN;
-            r1.print();
-            std::cout << RESET << "\n\n";
-            std::cout << BIWHITE << "test 5:\n" << RESET;
+    //test 1
+    try {
+        Vector<float> u{0.f, 0.f};
+        Vector<float> v{1.f, 1.f};
+
+        std::cout << "u = \n";
+        u.print();
+        std::cout << "\n";
+        std::cout << "v = \n";
+        v.print();
+        std::cout << "\n";
+        std::cout << u.dot(v) << "\n";
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << "――――― \n";
+    //test 2
+    try {
+        Vector<float> u{1.f, 1.f};
+        Vector<float> v{1.f, 1.f};
+
+        std::cout << "u = \n";
+        u.print();
+        std::cout << "\n";
+        std::cout << "v = \n";
+        v.print();
+        std::cout << "\n";
+        std::cout << u.dot(v) << "\n";
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << "――――― \n";
+    //test 3
+    try {
+        Vector<float> u{-1.f, 6.f};
+        Vector<float> v{3.f, 2.f};
+
+        std::cout << "u = \n";
+        u.print();
+        std::cout << "\n";
+        std::cout << "v = \n";
+        v.print();
+        std::cout << "\n";
+        std::cout << u.dot(v) << "\n";
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << "――――― \n";
+    //test 4
+    try {
+        Vector<float> u{0.f, 0.f};
+        Vector<float> v{1.f, 1.f, 2.f};
+
+        std::cout << "u = \n";
+        u.print();
+        std::cout << "\n";
+        std::cout << "v = \n";
+        v.print();
+        std::cout << "\n";
+        std::cout << u.dot(v) << "\n";
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+}
+
+static void test_ex04() {
     
-            Vector<float> r2 = linear_combination(u, c2);
-            print_linear_combination_info(u, c2);
-            std::cout << NGREEN << "\n/* * * Print result * * */\n\n";
-            std::cout << GREEN;
-            r2.print();
-            std::cout << RESET;
-        }
-        catch(std::length_error& e) {
-            std::cerr << RED << e.what() << RESET << std::endl;
-        }
-    }
-    {
-        Vector<float> u{1., 2., 3.};
-        Vector<float> v{4., 5., 6.};
+    std::cout << BIWHITE << "/* * * TEST EX04 (norms l1, l2, inf) * * */\n\n" << RESET;
 
-        float cosine = angle_cos(u, v);
-        std::cout << "cosine = " << cosine << "\n";
+    std::cout << "norms for vectors\n\n";
+    //test 1
+    Vector<float> u1{0.f, 0.f, 0.f};
+
+    std::cout << "||u||1 = " << u1.norm_l1() << "\n";
+    std::cout << "||u||  = " "√" << u1.pythagore_impl() << " ≈ " << u1.norm_l2() << "\n";
+    std::cout << "||u||∞ = " << u1.norm_inf() << "\n";
+
+    std::cout << "――――― \n";
+    //test 2
+    Vector<float> u2{1.f, 2.f, 3.f};
+
+    std::cout << "||u||1 = " << u2.norm_l1() << "\n";
+    std::cout << "||u||  = " "√" << u2.pythagore_impl() << " ≈ " << u2.norm_l2() << "\n";
+    std::cout << "||u||∞ = " << u2.norm_inf() << "\n";
+
+    std::cout << "――――― \n";
+    //test 3
+    Vector<float> u3{-1.f, -2.f};
+
+    std::cout << "||u||1 = " << u3.norm_l1() << "\n";
+    std::cout << "||u||  = " "√" << u3.pythagore_impl() << " ≈ " << u3.norm_l2() << "\n";
+    std::cout << "||u||∞ = " << u3.norm_inf() << "\n";
+
+    std::cout << "\nnorms for matrices\n\n";
+    //test 4
+    Matrix<float> m1{{0.f, 0.f, 0.f}, {1.f, 1.f, 1.f}};
+
+    std::cout << "||u||1 = " << m1.norm_l1() << "\n";
+    std::cout << "||u||  = " "√" << m1.pythagore_impl() << " ≈ " << m1.norm_F() << "\n";
+    std::cout << "||u||∞ = " << m1.norm_inf() << "\n";
+
+    std::cout << "――――― \n";
+    //test 5
+    Matrix<float> m2{{-4.f, 5.f, 6.f}, {3.f, -1.f, 1.f}};
+
+    std::cout << "||u||1 = " << m2.norm_l1() << "\n";
+    std::cout << "||u||  = " "√" << m2.pythagore_impl() << " ≈ " << m2.norm_F() << "\n";
+    std::cout << "||u||∞ = " << m2.norm_inf() << "\n";
+
+}
+
+static void test_ex05() {
+    
+    std::cout << BIWHITE << "/* * * TEST EX05 (cosine) * * */\n\n" << RESET;
+
+    //test 1
+    try {
+        Vector<float> u1{0.f, 0.f, 0.f};
+        Vector<float> u2{1.f, 2.f, 3.f};
+
+        float a_cos = angle_cos(u1, u2);
+        std::cout << "cos(θ) = " << a_cos << "\n";
     }
+    catch (std::domain_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;  
+    }
+    std::cout << "――――― \n";
+    //test 2
+    try {
+        Vector<float> u1{2.f, 4.f, -2.f};
+        Vector<float> u2{5.f, 1.f};
+
+        float a_cos = angle_cos(u1, u2);
+        std::cout << "cos(θ) = " << a_cos << "\n";
+    }
+    catch (std::length_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << "――――― \n";
+    //test 3
+    try {
+        Vector<float> u1{1.f, 0.f};
+        Vector<float> u2{1.f, 0.f};
+
+        float a_cos = angle_cos(u1, u2);
+        std::cout << "cos(θ) = " << a_cos << "\n";
+    }
+    catch (std::domain_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;  
+    }
+    std::cout << "――――― \n";
+    //test 4
+    try {
+        Vector<float> u1{1.f, 0.f};
+        Vector<float> u2{0.f, 1.f};
+
+        float a_cos = angle_cos(u1, u2);
+        std::cout << "cos(θ) = " << a_cos << "\n";
+    }
+    catch (std::domain_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;  
+    }
+    std::cout << "――――― \n";
+    //test 5
+    try {
+        Vector<float> u1{-1.f, 1.f};
+        Vector<float> u2{1.f, -1.f};
+
+        float a_cos = angle_cos(u1, u2);
+        std::cout << "cos(θ) = " << a_cos << "\n";
+    }
+    catch (std::domain_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;  
+    }
+    std::cout << "――――― \n";
+    //test 6
+    try {
+        Vector<float> u1{2.f, 1.f};
+        Vector<float> u2{4.f, 2.f};
+
+        float a_cos = angle_cos(u1, u2);
+        std::cout << "cos(θ) = " << a_cos <<  "\n";
+    }
+    catch (std::domain_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;  
+    }
+    std::cout << "――――― \n";
+    //test 7
+    try {
+        Vector<float> u1{1.f, 2.f, 3.f};
+        Vector<float> u2{4.f, 5.f, 6.f};
+
+        float a_cos = angle_cos(u1, u2);
+        std::cout << "cos(θ) = " << a_cos << "\n";
+    }
+    catch (std::domain_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;  
+    }
+}
+
+void test_ex06() {
+
+    std::cout << BIWHITE << "/* * * TEST EX06 (cross product) * * */\n\n" << RESET;
+
+    //test 1
+    try {
+        Vector<float> u{2.f, 3.f};
+        Vector<float> v{-6.f, 5.f, 1.f};
+
+        Vector<float> cp = cross_product(u, v);
+
+        cp.print();
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << "――――― \n";
+    //test 2
+    try {
+        Vector<float> u{0.f, 0.f, 1.f};
+        Vector<float> v{1.f, 0.f, 0.f};
+
+        Vector<float> cp = cross_product(u, v);
+
+        cp.print();
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << "――――― \n";
+    //test 3
+    try {
+        Vector<float> u{1.f, 2.f, 3.f};
+        Vector<float> v{4.f, 5.f, 6.f};
+
+        Vector<float> cp = cross_product(u, v);
+
+        cp.print();
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << "――――― \n";
+    //test 4
+    try {
+        Vector<float> u{4.f, 2.f, -3.f};
+        Vector<float> v{-2.f, -5.f, 16.f};
+
+        Vector<float> cp = cross_product(u, v);
+
+        cp.print();
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET;
+    }
+}
+
+int main(int ac, char **av)
+{
+    if (ac != 2) {
+        std::cerr << "Usage: ./matrix <exercise>\n"
+            << "Availeble: ex00, ex01, ..., ex05\n";
+        return (1);
+    }
+
+    const std::unordered_map<std::string, std::function<void()>> exercises = {
+        {"ex00", test_ex00},
+        {"ex01", test_ex01},
+        {"ex02", test_ex02},
+        {"ex03", test_ex03},
+        {"ex04", test_ex04},
+        {"ex05", test_ex05},
+        {"ex06", test_ex06},
+    };
+
+    const std::string key(av[1]);
+    auto it = exercises.find(key);
+    if (it == exercises.end()) {
+        std::cerr << "Unknown exercise: " << key << "\n";
+        return (1);
+    }
+
+    it->second();
     return (0);
 }

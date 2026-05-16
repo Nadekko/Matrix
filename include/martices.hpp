@@ -14,7 +14,6 @@ struct Matrix
     size_t rows;
     size_t cols;
     std::vector<K> data;
-    mutable K root = K(0);
 
     Matrix(std::initializer_list<std::initializer_list<K>> list) : data() {
         if (list.size() == 0)
@@ -77,54 +76,56 @@ struct Matrix
     //1-norm: ∥v∥1 (also called the Taxicab norm or Manhattan norm)
     K norm_l1() const
     {
-        K norm_l1 = (0);
+        K norm = (0);
         for (size_t i = 0; i < cols; i++) {
             K col_sum = K(0);
             for (size_t j = 0; j < rows; j++) {
                 col_sum += abs(data[j * cols + i]);
             }
-            norm_l1 = std::max(col_sum, norm_l1);
+            norm = std::max(col_sum, norm);
         }
-        return (norm_l1);
+        return (norm);
     }
 
+    K pythagore_impl() const
+    {        
+        K sum = K(0);
+        
+        for (const K& val : data)
+            sum += val * val;
+        return (sum);
+    }
     //Frobenius norm: ∥A∥_F = √(Σᵢⱼ aᵢⱼ²)
     K norm_F() const
     {
-        K norm_F = K(0);
+        K norm= pythagore_impl();
 
-        for (size_t i = 0; i < data.size(); i++) {
-            norm_F += data[i] * data[i];
-        }
-        if (norm_F == K(0)) {
-            set_root(norm_F);
-            return (norm_F);
-        }
-
-        K x = norm_F / K(2);
-        K prev = K(0);
-        // calculer la racine carré sans la fonction sqrt
+        // if the vector is zero, root is zero
+        if (norm == K(0)) { return (norm); }
+        
         // méthode de Heron + méthode de Newton-Raphson
+        K x = norm / K(2);
+        K prev = K(0);
+
         while (x != prev) {
             prev = x;
-            x = (x + (norm_F / x)) / K(2);
+            x = (x + (norm / x)) / K(2);
         }
-        set_root(x);
         return (x);
     }
 
     //∞-norm: ∥v∥∞ (also called the supremum norm)
     K norm_inf() const
     {
-        K norm_inf = (0);
+        K norm = (0);
         for (size_t i = 0; i < rows; i++) {
             K row_sum = K(0);
             for (size_t j = 0; j < cols; j++) {
                 row_sum += abs(data[i * cols + j]);
             }
-            norm_inf = std::max(row_sum, norm_inf);
+            norm = std::max(row_sum, norm);
         }
-        return (norm_inf);
+        return (norm);
     }
 };
 

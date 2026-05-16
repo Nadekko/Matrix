@@ -24,7 +24,7 @@ Vector<K> linear_combination(const std::vector<Vector<K>>& u, const std::vector<
             // fma[Fused Multiply-Add](x * y) + z
             // without fma CPU do 2 separate operation instead of one.
             if constexpr (std::is_floating_point_v<K>)
-                result.data[j] = fma(coefs[i], u[i].data[j], result.data[j]);
+                result.data[j] = std::fma(coefs[i], u[i].data[j], result.data[j]);
             else
                 result.data[j] += coefs[i] * u[i].data[j];
         }
@@ -39,7 +39,7 @@ void print_linear_combination_info(const std::vector<Vector<float>>& u, const st
 
     std::cout << std::fixed << std::setprecision(1);
     // display vectors
-    std::cout << BLUE;
+    std::cout << BIBLUE;
     for (size_t j = 0; j < rows; j++) {
         std::cout << "u[" << j << "] = ";  
         for (size_t i = 0; i < cols; i++) {
@@ -53,7 +53,7 @@ void print_linear_combination_info(const std::vector<Vector<float>>& u, const st
     std::cout << RESET << "\n";
 
     // display coefs
-    std::cout << YELLOW;
+    std::cout << BIYELLOW;
     for (size_t i = 0; i < cols; i++) {
         std::cout << "c[" << i << "] = " << c[i];
         if (i != cols - 1)

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <iostream>
+#include <cstdlib>
 #include <iomanip>
 #include <stdexcept>
 #include <cmath>
@@ -13,8 +14,7 @@ template<typename K>
 struct Vector
 {
     std::vector<K> data;
-    mutable K root = K(0);
-    // mutable K inverse_cos = K(0); //angle
+    // mutable K arccos = K(0); //angle
     
     Vector(std::initializer_list<K> list) : data(list) {
         if (list.size() == 0)
@@ -23,8 +23,8 @@ struct Vector
     Vector(size_t n, K val) : data(n, val) {}
     
     size_t size() const { return data.size(); }
-    void set_root(K r) const { root = r; }
-    K get_root() const { return (root); }
+    // void set_arccos(K arcc) const { arccos = arcc; }
+    // K get_arccos() const { return (arccos); }
     
     void    print() const {
         std::cout << std::fixed << std::setprecision(1);
@@ -77,7 +77,7 @@ struct Vector
             
         for (size_t i = 0; i < len; i++) {
             if constexpr (std::is_floating_point_v<K>)
-             result = fma(data[i], v.data[i], result);
+             result = std::fma(data[i], v.data[i], result);
             else
               result = data[i] * v.data[i] + result;
         }
@@ -87,56 +87,50 @@ struct Vector
     //l1-norm: ∥v∥1 (also called the Taxicab norm or Manhattan norm)
     K norm_l1() const
     {
-        size_t len = data.size();
-
-        K norm1 = K(0);
+        K norm = K(0);
         
-        for (size_t i = 0; i < len; i++) {
-            norm1 += std::abs(data[i]);
-        }
-        return (norm1);
+        for (const K& val : data)
+            norm += std::abs(val);
+        return (norm);
     }
 
     //∞-norm: ∥v∥∞ (also called the supremum norm)
     K norm_inf() const
     {
-        size_t len = data.size();
-
-        K norm_inf = K(0);
+        K norm = K(0);
         
-        for (size_t i = 0; i < len; i++) {
-            norm_inf = std::max(std::abs(data[i]), norm_inf);
-        }
-        return (norm_inf);
+        for (const K& val : data)
+            norm = std::max(std::abs(val), norm);
+        return (norm);
     }
 
     //l2-norm: ∥v∥ or ∥v∥2 (also called the Euclidean norm)
     // u = [3, 4]
     // ||u|| = √(3² + 4²) = √25 = 5
+    K pythagore_impl() const
+    {        
+        K sum = K(0);
+
+        for (const K& val : data)
+            sum += val * val;
+        return (sum);
+    }
+    
     K norm_l2() const
     {
-        size_t len = data.size();
+        K norm= pythagore_impl();
 
-        K norm_l2 = K(0);
-        
-        for (size_t i = 0; i < len; i++) {
-            norm_l2 += data[i] * data[i];
-        }
         // if the vector is zero, root is zero
-        if (norm_l2 == K(0)) {
-            set_root(norm_l2);
-            return (norm_l2);
-        }
-        // calculer la racine carré sans la fonction sqrt
+        if (norm == K(0)) { return (norm); }
+        
         // méthode de Heron + méthode de Newton-Raphson
-        K x = norm_l2 / K(2);
+        K x = norm / K(2);
         K prev = K(0);
 
         while (x != prev) {
             prev = x;
-            x = (x + (norm_l2 / x)) / K(2);
+            x = (x + (norm / x)) / K(2);
         }
-        set_root(x);
         return (x);
     }
 };
