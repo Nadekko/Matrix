@@ -27,7 +27,7 @@ struct Vector
     // K get_arccos() const { return (arccos); }
     
     void    print() const {
-        std::cout << std::fixed << std::setprecision(1);
+        std::cout << std::fixed << std::setprecision(2);
         for (const K& val : data)
         std::cout << "[" << val << "]\n";
     };
@@ -35,7 +35,8 @@ struct Vector
     void add(const Vector<K>& v)
     {
         if (data.size() != v.size())
-            throw std::length_error("Error: vectors must have the same size");
+            throw std::length_error("Error : u element count (" + std::to_string(data.size())
+                + ") must match v element count (" + std::to_string(v.size()) + ")");;
 
         for (size_t i = 0; i < data.size(); ++i)
             data[i] += v.data[i];
@@ -44,7 +45,8 @@ struct Vector
     void    sub(const Vector<K>& v)
     {
         if (data.size() != v.size())
-            throw std::length_error("Error: vectors must have the same size");
+            throw std::length_error("Error : u element count (" + std::to_string(data.size())
+                + ") must match v element count (" + std::to_string(v.size()) + ")");;
 
         for (size_t i = 0; i < data.size(); i++)
             data[i] -= v.data[i];
@@ -69,7 +71,8 @@ struct Vector
     K dot(const Vector<K>& v) const
     {
         if (data.size() != v.data.size())
-            throw std::length_error("Error: vectors must have the same size");
+            throw std::length_error("Error : u element count (" + std::to_string(data.size())
+                + ") must match v element count (" + std::to_string(v.size()) + ")");
             
         size_t len = data.size();
         

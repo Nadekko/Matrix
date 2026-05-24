@@ -6,7 +6,8 @@ template<typename K>
 Vector<K> linear_combination(const std::vector<Vector<K>>& u, const std::vector<K>& coefs)
 {
     if (u.size() != coefs.size())
-        throw std::length_error("Error: vectors and coefficients must have the same number of elements");
+        throw std::length_error("Error : u element count (" + std::to_string(u.size())
+            + ") must match coefs element count (" + std::to_string(coefs.size()) + ")");
 
     size_t len = u[0].size();
     if (len == 0)
@@ -37,6 +38,7 @@ void print_linear_combination_info(const std::vector<Vector<float>>& u, const st
     size_t rows = u[0].size();
     size_t cols = u.size();
 
+    std::cout << BIWHITE << "――――― \n";
     std::cout << std::fixed << std::setprecision(1);
     // display vectors
     std::cout << BIBLUE;
@@ -64,14 +66,15 @@ void print_linear_combination_info(const std::vector<Vector<float>>& u, const st
 
     // display operations
     for (size_t j = 0; j < rows; j++) {
-        std::cout << "r[" << j << "] = ";
+        std::cout << BIWHITE << "r[" << j << "] = ";
         for (size_t i = 0; i < cols; i++) {
             if (i > 0) std::cout << " + ";
-            std::cout << YELLOW << c[i] <<  RESET << " * ";
-            std::cout << BLUE << " |" << u[i].data[j] << "|" << RESET;
+            std::cout << BIYELLOW << c[i] <<  RESET << " * ";
+            std::cout << BIBLUE << " |" << u[i].data[j] << "|" << RESET;
         }
     std::cout << "\n";
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
 }
 
 // Multipplier des vecteurs par des scalaires et les addtionner:

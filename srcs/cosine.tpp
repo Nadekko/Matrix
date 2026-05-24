@@ -7,8 +7,9 @@ template <typename K>
 K angle_cos(const Vector<K>& u, const Vector<K>& v)
 {
     if (u.size() != v.size())
-        throw std::length_error("Error : u and v must have the same number of elements");
-    
+        throw std::length_error("Error : u element count (" + std::to_string(u.size())
+            + ") must match v element count (" + std::to_string(v.size()) + ")");
+
     K norm_product = u.norm_l2() * v.norm_l2();
     if (norm_product == K(0))
         throw std::domain_error("Error: angle is undefined for zero-length vectors");

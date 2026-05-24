@@ -14,7 +14,8 @@ Vector<K> lerp(const Vector<K>& u, const Vector<K>& v, float t)
     if (t < 0 || t > 1)
         throw std::invalid_argument("Error: t must be between 0 and 1 (t ∈ [0; 1])");
     if (u.size() != v.size())
-        throw std::length_error("Error: u and v must have the same number of elements");
+        throw std::length_error("Error : u element count (" + std::to_string(u.size())
+            + ") must match v element count (" + std::to_string(v.size()) + ")");;
 
     size_t len = u.size();
     // init result with size of v ∈ u,  ∀ val ∈ result, val = 0;

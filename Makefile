@@ -20,7 +20,7 @@ clean:
 fclean: clean
 	rm -f $(NAME)
 
-re: flean all
+re: fclean all
 
 # raccourcis exercices
 ex00 ex01 ex02 ex03 ex04 ex05 ex06 ex07 \

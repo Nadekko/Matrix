@@ -24,7 +24,7 @@ static void test_ex00() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << RESET;
     }
-    std::cout << "\n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
         Vector<float> u{2.f, 3.f};
@@ -35,7 +35,7 @@ static void test_ex00() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << RESET;
     }
-    std::cout << "\n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
         Vector<float> u{2.f, 3.f};
@@ -45,7 +45,7 @@ static void test_ex00() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << RESET;
     }
-    std::cout << "\n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 4
     try {
         Vector<float> u{2.f, 3.f};
@@ -80,7 +80,7 @@ static void test_ex01() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
-    std::cout << "\n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
         std::vector<Vector<float>> v2 = {
@@ -95,14 +95,14 @@ static void test_ex01() {
         Vector<float> e3 = linear_combination(v2, c3);
 
         e2.print();
-        std::cout << "\n";
+        std::cout << BIWHITE << "――――― \n" << RESET;
         e3.print();
 
     }
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
-    std::cout << "\n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
         std::vector<Vector<float>> v3 = {
@@ -134,6 +134,8 @@ static void test_ex02() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 2
     try {
         float r2 = lerp(0.f, 1.f, 1.f);
 
@@ -142,6 +144,8 @@ static void test_ex02() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 3
     try {
         float r3 = lerp(0.f, 1.f, 0.f);
 
@@ -150,8 +154,8 @@ static void test_ex02() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
-    std::cout << "\n";
-    //test 2
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 4
     try {
         Vector<float> v1{2.f, 1.f};
         Vector<float> v2{4.f, 2.f};
@@ -163,8 +167,8 @@ static void test_ex02() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
-    std::cout << "\n";
-    //test 3
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 5
     try {
         Matrix<float> m1{{2.f, 1.f}, {3.f, 4.f}};
         Matrix<float> m2{{20.f, 10.f}, {30.f, 40.f}};
@@ -198,7 +202,7 @@ static void test_ex03() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
         Vector<float> u{1.f, 1.f};
@@ -215,7 +219,7 @@ static void test_ex03() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
         Vector<float> u{-1.f, 6.f};
@@ -232,7 +236,7 @@ static void test_ex03() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 4
     try {
         Vector<float> u{0.f, 0.f};
@@ -263,7 +267,7 @@ static void test_ex04() {
     std::cout << "||u||  = " "√" << u1.pythagore_impl() << " ≈ " << u1.norm_l2() << "\n";
     std::cout << "||u||∞ = " << u1.norm_inf() << "\n";
 
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     Vector<float> u2{1.f, 2.f, 3.f};
 
@@ -271,7 +275,7 @@ static void test_ex04() {
     std::cout << "||u||  = " "√" << u2.pythagore_impl() << " ≈ " << u2.norm_l2() << "\n";
     std::cout << "||u||∞ = " << u2.norm_inf() << "\n";
 
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     Vector<float> u3{-1.f, -2.f};
 
@@ -287,7 +291,7 @@ static void test_ex04() {
     std::cout << "||u||  = " "√" << m1.pythagore_impl() << " ≈ " << m1.norm_F() << "\n";
     std::cout << "||u||∞ = " << m1.norm_inf() << "\n";
 
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 5
     Matrix<float> m2{{-4.f, 5.f, 6.f}, {3.f, -1.f, 1.f}};
 
@@ -312,7 +316,7 @@ static void test_ex05() {
     catch (std::domain_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;  
     }
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
         Vector<float> u1{2.f, 4.f, -2.f};
@@ -324,7 +328,7 @@ static void test_ex05() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
         Vector<float> u1{1.f, 0.f};
@@ -336,7 +340,7 @@ static void test_ex05() {
     catch (std::domain_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;  
     }
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 4
     try {
         Vector<float> u1{1.f, 0.f};
@@ -348,7 +352,7 @@ static void test_ex05() {
     catch (std::domain_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;  
     }
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 5
     try {
         Vector<float> u1{-1.f, 1.f};
@@ -360,7 +364,7 @@ static void test_ex05() {
     catch (std::domain_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;  
     }
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 6
     try {
         Vector<float> u1{2.f, 1.f};
@@ -372,7 +376,7 @@ static void test_ex05() {
     catch (std::domain_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;  
     }
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 7
     try {
         Vector<float> u1{1.f, 2.f, 3.f};
@@ -386,7 +390,7 @@ static void test_ex05() {
     }
 }
 
-void test_ex06() {
+static void test_ex06() {
 
     std::cout << BIWHITE << "/* * * TEST EX06 (cross product) * * */\n\n" << RESET;
 
@@ -402,7 +406,7 @@ void test_ex06() {
     catch (std::length_error &e) {
         std::cout << RED << e.what() << "\n" << RESET;
     }
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
         Vector<float> u{0.f, 0.f, 1.f};
@@ -415,7 +419,7 @@ void test_ex06() {
     catch (std::length_error &e) {
         std::cout << RED << e.what() << "\n" << RESET;
     }
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
         Vector<float> u{1.f, 2.f, 3.f};
@@ -428,7 +432,7 @@ void test_ex06() {
     catch (std::length_error &e) {
         std::cout << RED << e.what() << "\n" << RESET;
     }
-    std::cout << "――――― \n";
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 4
     try {
         Vector<float> u{4.f, 2.f, -3.f};
@@ -441,6 +445,174 @@ void test_ex06() {
     catch (std::length_error &e) {
         std::cout << RED << e.what() << "\n" << RESET;
     }
+}
+
+static void test_ex07() {
+
+    std::cout << BIWHITE << "/* * * TEST EX07 (linear map, matrix multiplication) * * */\n\n" << RESET;
+
+    //test 1
+    try {
+        Matrix<float> u {{4.0f, 2.2f, 6.0f}, {1.0f, 3.2f, -4.0f}};
+        Vector<float> v {0.0f, 5.1f};
+
+        Vector<float> result = u.mul_vec(v);
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 2
+    try {
+        Matrix<float> u {{4.0f, 2.2f, 6.0f}, {1.0f, 3.2f, -4.0f}};
+        Vector<float> v {0.0f, -5.1f, 2.0f};
+
+        Vector<float> result = u.mul_vec(v);
+
+        result.print();
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 3
+    try {
+        Matrix<float> u {{4.0f, 2.2f, 6.0f}, {1.0f, 3.2f, -4.0f}};
+        Matrix<float> v {{0.0f, -5.1f, 2.0f}, {4.0f, -9.0f, 1.1f}, {4.5f, 2.0f, -6.0f}};
+
+        Matrix<float> result = u.mul_mat(v);
+
+        result.print();
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 4
+    try {
+        Matrix<float> u {{4.0f, 2.2f, 6.0f}, {1.0f, 3.2f, -4.0f}};
+        Matrix<float> v {{0.0f, -5.1f}, {4.0f, -9.0f}, {4.5f, 2.0f}};
+
+        Matrix<float> result = u.mul_mat(v);
+
+        result.print();
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 5
+    try {
+        Matrix<float> u {{4.0f, 2.0f, 6.0f}, {1.0f, 3.0f, -4.0f}, {0.0f, -7.0f, 3.0f}};
+        Matrix<float> v {{0.0f, -5.0f, 2.0f}, {4.0f, 8.0f, 1.0f}, {2.0f, 5.0f, 6.0f}, {0.0f, 2.0, -1.0f}};
+
+        Matrix<float> result = u.mul_mat(v);
+
+        result.print();
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 6
+    try {
+        Matrix<float> u {{4.0f, 2.0f, 6.0f}, {1.0f, 3.0f, -4.0f}, {0.0f, -7.0f, 3.0f}};
+        Matrix<float> v {{0.0f, -5.0f}, {4.0f, 8.0f}, {2.0f, 5.0f}};
+
+        Matrix<float> result = u.mul_mat(v);
+
+        result.print();
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+}
+
+static void test_ex08() {
+
+    std::cout << BIWHITE << "/* * * TEST EX08 (trace) * * */\n\n" << RESET;
+
+    //test 1
+    try {
+        Matrix<double> u {{1., 2., 3.}, {4., 5., 6.}};
+
+        double tr = u.trace();
+        std::cout << "Tr(" << tr << ")\n";
+
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 2
+    try {
+        Matrix<float> u {{1.0f, 0.0f}, {0.0f, 1.0f}};
+
+        float tr = u.trace();
+        std::cout << "Tr(" << tr << ")\n";
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 3
+    try {
+        Matrix<double> u {{2., -5., 0.}, {4., 3., 7.}, {-2, 3, 4}};
+
+        double tr = u.trace();
+        std::cout << "Tr(" << tr << ")\n";
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET;
+    }
+    //test 4
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    try {
+        Matrix<double> u {{-2., -8., 4.}, {1., -23., 7.}, {0., 6., 4.}};
+
+        double tr = u.trace();
+        std::cout << "Tr(" << tr << ")\n";
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET;
+    }
+}
+
+static void test_ex09() {
+
+    std::cout << BIWHITE << "/* * * TEST EX09 (transposition) * * */\n\n" << RESET;
+
+    Matrix<double> A {{4., -7.}, {5., 3.}};
+    Matrix<double> B {{5., -1.}, {2., 7.}, {-3., 4.}};
+    Matrix<float> C  {{1.f, -7.f, 3.f, -2.f}};
+
+    std::cout << BICYAN << "print matrices before transpose\n\n" << RESET;
+
+    std::cout << "A\n";
+    A.print();
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    std::cout << "B\n";
+    B.print();
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    std::cout << "C\n";
+    C.print();
+
+    std::cout << BICYAN << "\nprint matrices after transpose\n" << RESET;
+    
+    Matrix<double> Ta = A.transpose();
+    Matrix<double> Tb = B.transpose();
+    Matrix<float> Tc = C.transpose();
+
+    std::cout << "Ta\n";
+    Ta.print();
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    std::cout << "Tb\n";
+    Tb.print();
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    std::cout << "Tc\n";
+    Tc.print();
+    std::cout << BIWHITE << "――――― \n" << RESET;
+
 }
 
 int main(int ac, char **av)
@@ -459,6 +631,9 @@ int main(int ac, char **av)
         {"ex04", test_ex04},
         {"ex05", test_ex05},
         {"ex06", test_ex06},
+        {"ex07", test_ex07},
+        {"ex08", test_ex08},
+        {"ex09", test_ex09},
     };
 
     const std::string key(av[1]);
@@ -467,7 +642,6 @@ int main(int ac, char **av)
         std::cerr << "Unknown exercise: " << key << "\n";
         return (1);
     }
-
     it->second();
     return (0);
 }
