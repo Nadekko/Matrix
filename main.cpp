@@ -599,31 +599,207 @@ static void test_ex09() {
 
     std::cout << BICYAN << "\nprint matrices after transpose\n" << RESET;
     
-    Matrix<double> Ta = A.transpose();
-    Matrix<double> Tb = B.transpose();
-    Matrix<float> Tc = C.transpose();
+    Matrix<double> At = A.transpose();
+    Matrix<double> Bt = B.transpose();
+    Matrix<float> Ct = C.transpose();
 
-    std::cout << "Ta\n";
-    Ta.print();
+    std::cout << "At\n";
+    At.print();
     std::cout << BIWHITE << "――――― \n" << RESET;
-    std::cout << "Tb\n";
-    Tb.print();
+    std::cout << "Bt\n";
+    Bt.print();
     std::cout << BIWHITE << "――――― \n" << RESET;
-    std::cout << "Tc\n";
-    Tc.print();
+    std::cout << "Ct\n";
+    Ct.print();
     std::cout << BIWHITE << "――――― \n" << RESET;
 
+}
+
+static void test_ex10() {
+
+    std::cout << BICYAN << "testing negative zero\n";
+    std::cout << "print zero -> " << 0.0 << "\n";
+    std::cout << "print neg zero -> " << -0.0 << "\n";
+    std::cout << "print 1.0/0.0 -> " << (1.0/0.0) << "\n";
+    std::cout << "print 1.0/-0.0 -> " << (1.0/-0.0) << "\n";
+    std::cout << "print 0.0/-1.0 -> " << (0.0/-1.0) << "\n";
+    std::cout << "does -0.0 == 0.0 (reutrn 1 if true) -> " << (0.0 == -0.0) << "\n";
+    std::cout << "other test == " << "\n";
+    std::cout << (-0 - (2 * -0)) << "\n";
+    std::cout << (0.0 - (3.0 * 0.0)) << "\n";
+    std::cout << (0.0 - (-0.0 * 0.0)) << "\n";
+    std::cout << (0.0 - 0.0) << "\n";
+    std::cout << (-0.0 - -0.0) << "\n";
+    std::cout << BIWHITE << "/* * * TEST EX10 (row echelon form REF/RREF) * * */\n\n" << RESET;
+    //test 1
+    Matrix<double> A {{0.001, 1., 4.}, {0., 4., 8.}, {0., 5., 4.}};
+    std::cout << BIWHITE << "Print Matrix\n" << RESET;
+    A.print();
+
+    Matrix<double> identityA = A.reduce_row_echelon();
+
+    std::cout << BIWHITE << "Print Reduce Row Echelon Form\n" << RESET;
+    identityA.print();
+
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 2
+    Matrix<float> B {{8.f, 5.f, -2.f, 4.f, 28.f}, {4.f, 2.5f, 20.f, 4.f, -4.f}, {8.f, 5.f, 1.f, 4.f, 17.f}};
+    std::cout << BIWHITE << "Print Matrix\n" << RESET;
+    B.print();
+
+    Matrix<float> identityB = B.reduce_row_echelon();
+
+    std::cout << BIWHITE << "Print Reduce Row Echelon Form\n" << RESET;
+    identityB.print();
+
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 3
+    Matrix<double> C {{1., 0., 0.}, {0., 1., 0.}, {0., 0., 1.}};
+    std::cout << BIWHITE << "Print Matrix\n" << RESET;
+    C.print();
+
+    Matrix<double> identityC = C.reduce_row_echelon();
+
+    std::cout << BIWHITE << "Print Reduce Row Echelon Form\n" << RESET;
+    identityC.print();
+
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 4
+    Matrix<double> D {{1., 2.}, {3., 4.}};
+    std::cout << BIWHITE << "Print Matrix\n" << RESET;
+    D.print();
+
+    Matrix<double> identityD = D.reduce_row_echelon();
+
+    std::cout << BIWHITE << "Print Reduce Row Echelon Form\n" << RESET;
+    identityD.print();
+
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 5
+    Matrix<double> E {{1., 2.}, {2., 4.}};
+    std::cout << BIWHITE << "Print Matrix\n" << RESET;
+    E.print();
+
+    Matrix<double> identityE = E.reduce_row_echelon();
+
+    std::cout << BIWHITE << "Print Reduce Row Echelon Form\n" << RESET;
+    identityE.print();
+
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 6
+    Matrix<double> F {{0., 2., 3.}, {0., 7., 0.}, {0., 5., 4.}};
+    std::cout << BIWHITE << "Print Matrix\n" << RESET;
+    F.print();
+
+    Matrix<double> identityF = F.reduce_row_echelon();
+
+    std::cout << BIWHITE << "Print Reduce Row Echelon Form\n" << RESET;
+    identityF.print();
+
+}
+
+static void test_ex11 () {
+
+    std::cout << BIWHITE << "/* * * TEST EX11 (determinant) * * */\n\n" << RESET;
+
+    //test 1
+    try {
+        Matrix<float> A {{4.3}, {1.0}};
+
+        float det = A.determinant();
+        std::cout << "det(" << det << ")\n";
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+    //test 2
+    try {
+        Matrix<float> B {{4.3}};
+
+        float det = B.determinant();
+        std::cout << "det(" << det << ")\n";
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+    //test 3
+    try {
+        Matrix<double> A {{1.0, -1.}, {-1., 1.}};
+
+        double det = A.determinant();
+        std::cout << "det(" << det << ")\n";
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+    //test 4
+    try {
+        Matrix<double> A {{2., 0., 0.}, {0., 2., 0.}, {0., 0., 2.}};
+
+        double det = A.determinant();
+        std::cout << "det(" << det << ")\n";
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+    //test 5
+    try {
+        Matrix<double> A {{8., 5., -2.}, {4., 7., 20.}, {7., 6., 1.}};
+
+        double det = A.determinant();
+        std::cout << "det(" << det << ")\n";
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+    //test 6
+    try {
+        Matrix<double> A {{8., 5., -2., 4}, {4., 2.5, 20., 4.}, {8., 5., 1., 4.}, {28., -4., 17., 1.}};
+
+        double det = A.determinant();
+        std::cout << "det(" << det << ")\n";
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+    //test 7
+    try {
+        Matrix<double> A {{8., 5., -2., 4, 7}, {4., 2.5, 20., 4., 0}, {8., 5., 1., 4., 4}, {28., -4., 17., 1., 18}, {4., 2., 1.3, 7., 78.}};
+
+        double det = A.determinant();
+        std::cout << "det(" << det << ")\n";
+    }
+    catch (std::length_error &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+}
+
+static void all_test()
+{
+    test_ex00();
+    test_ex01();
+    test_ex02();
+    test_ex03();
+    test_ex04();
+    test_ex05();
+    test_ex06();
+    test_ex07();
+    test_ex08();
+    test_ex09();
+    test_ex10();
+    test_ex11();
 }
 
 int main(int ac, char **av)
 {
     if (ac != 2) {
         std::cerr << "Usage: ./matrix <exercise>\n"
-            << "Availeble: ex00, ex01, ..., ex05\n";
+            << "Available: ex00, ex01, ..., ex05\n";
         return (1);
     }
 
     const std::unordered_map<std::string, std::function<void()>> exercises = {
+        {"all_test", all_test},
         {"ex00", test_ex00},
         {"ex01", test_ex01},
         {"ex02", test_ex02},
@@ -634,6 +810,8 @@ int main(int ac, char **av)
         {"ex07", test_ex07},
         {"ex08", test_ex08},
         {"ex09", test_ex09},
+        {"ex10", test_ex10},
+        {"ex11", test_ex11},
     };
 
     const std::string key(av[1]);

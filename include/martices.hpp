@@ -6,6 +6,7 @@
 #include <stdexcept>
 #include <cmath>
 #include <algorithm>
+#include <limits>
 #include "colors.hpp"
 
 template<typename K>
@@ -30,24 +31,31 @@ struct Matrix
             for (auto& val : row)
                 data.push_back(val);
     };
-    Matrix(size_t r, size_t c, K val) : rows(r), cols(c), data(r * c, val) {}
+    Matrix(size_t r, size_t c, const K& val) : rows(r), cols(c), data(r * c, val) {}
+    // Matrix(const Matrix<K>& other)
+    //     : rows(other.rows), cols(other.cols), data(other.data) {}
+
+    K& operator()(size_t i, size_t j) {
+        return data[i * cols + j];
+    }
+
+    const K& operator()(size_t i, size_t j) const {
+        return data[i * cols + j];
+    }
 
     std::pair<size_t, size_t> shape() const { return {rows, cols}; }
     bool is_square() const { return rows == cols; }
     size_t size() const { return data.size(); }
     
     void print() const {
-        std::cout << std::fixed << std::setprecision(2);
         for (size_t i = 0; i < rows; i++) {
             std::cout << "[";
             for (size_t j = 0; j < cols; j++) {
                 // A = 1, 2, 3
                 //     4, 5, 6
                 // stocker tel que A = 1., 2., 3., 4., 5., 6. (pas de colonnes pas de lignes)
-                // i=1, j=1 : data[1*3+1] = 4 -> valeur 5
-                std::cout << data[i * cols + j];
-                if (j < cols - 1)
-                    std::cout << ", ";
+                // i=1, j=1 : data[1*3+1] = 4 -> indice 4 : valeur 5
+                std::cout << std::setw(6) << std::fixed << std::setprecision(3) << data[i * cols + j] << std::setw(2) << " ";
             }
             std::cout << "]\n";
         }
@@ -81,10 +89,10 @@ struct Matrix
     K norm_l1() const
     {
         K norm = (0);
-        for (size_t i = 0; i < cols; i++) {
+        for (size_t j = 0; j < cols; j++) {
             K col_sum = K(0);
-            for (size_t j = 0; j < rows; j++) {
-                col_sum += abs(data[j * cols + i]);
+            for (size_t i = 0; i < rows; i++) {
+                col_sum += abs((data[i * cols + j]));
             }
             norm = std::max(col_sum, norm);
         }
@@ -187,17 +195,28 @@ struct Matrix
     K   trace() const
     {
         if (!is_square())
-            throw std::length_error("Error: matrice must be square.");
+            throw std::length_error("Error: matrix must be square.");
         
         K result = K(0);
 
         for (size_t i = 0; i < rows; i++) {
-                    result = data[i * cols + i];
+                result += data[i * cols + i];
         }
         return (result);
     }
 
     //EX09
+    // chaque row d'une matrice devient une colonne
+    // utile pour la compatibilté entre C/C++ et les API de rendu comme OpenGL
+    // C/C++ les matrices sont stocker lignes par lignes en mémoires
+    // OpenGL interprète par défaut les matrices fournis colonnes par colonnes
+    // Matrice réelle       ->  A* = Aᵀ (identique car le conjugate d'un nombre réelle est lui même)
+    // Matrice complexe     ->  A* ≠ Aᵀ (il faut en plus conjuguer)
+    // Matrice Hermitienne  ->  A = A* (idantique à sa propre conjugate transpose)
+    // un nombre complexe z peut se présenté tel que z = a + ib,
+    // a et b sont des nombres réel et i (l'unité imaginaire) est un nombre particulier tel que i² = -1
+    // le conjugué de z, noté z̄, c'est juste inverser le signe de la partie imaginaire z̄ = a - ib
+    // std::conj/conjf/conjl <ccomplex> 
     Matrix<K> transpose()
     {
         Matrix<K> result(cols, rows, K(0));
@@ -211,5 +230,200 @@ struct Matrix
         }
         return (result);
     }
+
+    //EX10
+    // REF (row echelon form) ou RREF (reduce row echelon form)
+    // algorithm élimination de Gauss
+    // Elementary Row Operation
+    // - Multiply (or divide) by a non-zero constant
+    // - Inter change two row
+    // - Add a multiplie of one row to another
+    Matrix<K> row_echelon() const
+    {
+        size_t lead = 0; // column
+        Matrix<K> result = *this;
+
+        // Iteration on each row
+        for (size_t i = 0; i < rows; i++) {
+            
+            // if we exceed number of cols
+            // matrix reduction is finished
+            if (lead >= cols)
+                break ;
+            
+            // current row candidate for pivot
+            size_t pivot_row = 0;
+
+            // find pivot
+            // searching for a non-zero value on the col
+            // if not find increment to the next col
+            while (lead < cols) {
+                pivot_row = i;
+                while (pivot_row < rows && result(pivot_row, lead) == K(0)) {
+                    pivot_row++;
+                }
+                if (pivot_row == rows) {
+                    lead++;
+                }
+                else
+                    break ;
+            }
+            if (lead >= cols)
+                break ;
+            
+            //swap rows if pivot is not in current row
+            if (pivot_row != i) {
+                for (size_t j = 0; j < cols; j++) {
+                    std::swap(result(pivot_row, j), result(i, j));
+                }
+            }
+
+            //normalize pivot row (make pivot row == 1)
+            K div = result(i, lead);
+            if (div != K(0) && div != K(1)) {
+                for (size_t j = 0; j < cols; j++) {
+                    if (result(i, j) == K(0))
+                        continue ;
+                    result(i, j) /= div;
+                }
+            }
+
+            // eliminate other rows (below pivot)
+            for (size_t k = pivot_row + 1; k < rows; k++) {
+                K mult = result(k, lead);
+                for (size_t j = 0; j < cols; j++) {
+                    result(k, j) -= mult * result(pivot_row, j);
+                }
+            }
+            lead++;
+        }
+        return (result);
+    }
+
+    Matrix<K> reduce_row_echelon() const
+    {
+        size_t lead = 0; // column
+        Matrix<K> result = *this;
+
+        // Iteration on each row
+        for (size_t i = 0; i < rows; i++) {
+            
+            // if we exceed number of cols
+            // matrix reduction is finished
+            if (lead >= cols)
+                break ;
+            
+            // current row candidate for pivot
+            size_t pivot_row = i;
+
+            // find pivot
+            // searching for a non-zero value on the col
+            // if not find increment to the next col
+            while (lead < cols) {
+                pivot_row = i;
+                while (pivot_row < rows && result(pivot_row, lead) == K(0)) {
+                    pivot_row++;
+                }
+                if (pivot_row == rows) {
+                    lead++;
+                }
+                else
+                    break ;
+            }
+            if (lead >= cols)
+                break ;
+            
+            //swap rows if pivot is not in current row
+            if (pivot_row != i) {
+                for (size_t j = 0; j < cols; j++) {
+                    std::swap(result(pivot_row, j), result(i, j));
+                }
+            }
+
+            //normalize pivot row (make pivot row == 1)
+            K div = result(i, lead);
+            if (div != K(0) && div != K(1)) {
+                for (size_t j = 0; j < cols; j++) {
+                    if (result(i, j) == K(0))
+                        continue ;
+                    result(i, j) /= div;
+                }
+            }
+
+            // eliminate other rows (above and below pivot)
+            for (size_t k = 0; k < rows; k++) {
+                // skip pivot row itself 
+                if (k == i) 
+                    continue ;
+                K mult = result(k, lead);
+                for (size_t j = 0; j < cols; j++) {
+                    result(k, j) -= mult * result(i, j);
+                }
+            }
+            lead++;
+        }
+        return (result);
+    }
+
+    // Si A de taille 1x1 le det est égale a son élément
+    //                2x2 det(a b) = ad - bc 
+    //                       c d
+    //                             = (a + b)(c + d) - ac - bd - 2bc = ad - bc 
+    // le difference du produit de la premiere diagonal et du produit de la seconde digonal
+    // si n > 1, j'ai choisi de suivre la methode d'eliminatation de Gaussian comme pour le row echelon,
+    // pour transformer la matrice square en upper_triangle et multiplier sa diagonale
+    // Si det(A) = 0, la matrice est non reversible,
+    // une matrice dont le determinant est 0
+    // écrase les vecteurs qu'elle transforme dans un espace de dimension inferieur.
+    // fn determinant::<K>(&mut self) -> K;
+    K determinant() const
+    {
+        if (!is_square())
+            throw std::length_error("Error : matrix must be square.");
+
+        size_t  n = rows;
+        size_t  pivot = 0;
+        K       det = 1;
+        K       factor = 0;
+        Matrix<K> result = *this;
+
+        // case 1x1
+        if (size() == 1)
+            return (data[0]);
+
+        // other case
+        else {
+
+            for (size_t i = 0; i < n ; i++) {
+
+                pivot = i;
+                while (pivot < n && result(pivot, i) == K(0)) {
+                    pivot++;
+                }
+                if (pivot == n) {
+                    return (K(0));
+                }
+                if (pivot != i) {
+                    for (size_t j = 0; j < n; j++) {
+                        std::swap(result(i, j), result(pivot, j));
+                    }
+                    det *= K(-1);
+                }
+
+                det *= result(i, i);
+
+                for (size_t j = i + 1; j < n; j++) {
+                    factor = result(j, i) / result(i, i);
+                    for (size_t k = i; k < n; k++) {
+                        result(j, k) -= factor * result(i, k);
+                    }
+                }
+            }
+        }
+        return (det);
+    }
+
+    
 };
+
 
