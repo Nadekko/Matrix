@@ -1,11 +1,11 @@
 #include "include/vectors.hpp"
-#include "include/martices.hpp"
+#include "include/matrices.hpp"
 
 //tpp
 #include "srcs/cosine.tpp"
 #include "srcs/cross_product.tpp"
 #include "srcs/linear_combination.tpp"
-#include "srcs/linera_interpolation.tpp"
+#include "srcs/linear_interpolation.tpp"
 
 #include <unordered_map>
 #include <functional>
@@ -774,6 +774,84 @@ static void test_ex11 () {
     }
 }
 
+static void test_ex12() {
+    std::cout << BIWHITE << "/* * * TEST EX12 (inverse matrix) * * */\n\n" << RESET;
+
+    //test 1
+    try {
+        Matrix<double> A{{1., 2.}, {4., 2.}, {3., 8.}};
+
+        A.inverse();
+        A.print();
+    }
+    catch (std::invalid_argument &e) {
+        std::cout << RED << e.what() << RESET << "\n";
+    }
+    //test 2
+    try {
+        Matrix<double> A{{0., 2.}, {0., 0.}};
+
+        A.inverse();
+        A.print();
+    }
+    catch (std::domain_error &e) {
+        std::cout << RED << e.what() << RESET << "\n";
+    }
+    //test 3
+    try {
+        Matrix<double> A{{1., 0., 0.}, {0., 1., 0.}, {0., 0., 1.}};
+
+        A.inverse();
+        A.print();
+    }
+    catch (std::invalid_argument &e) {
+        std::cout << RED << e.what() << RESET << "\n";
+    }
+    //test 4
+    try {
+        Matrix<double> A{{2., 0., 0.}, {0., 2., 0.}, {0., 0., 2.}};
+
+        A.inverse();
+        A.print();
+    }
+    catch (std::invalid_argument &e) {
+        std::cout << RED << e.what() << RESET << "\n";
+    }
+    //test 5
+    try {
+        Matrix<double> A {{8., 5., -2}, {4., 7., 20.}, {7., 6., 1.}};
+
+        Matrix<double> B = A.inverse();
+        B.print();
+    }
+    catch (std::invalid_argument &e) {
+        std::cout << RED << e.what() << RESET << "\n";
+    }
+}
+
+static void test_ex13() {
+    std::cout << BIWHITE << "/* * * TEST EX13 (rank) * * */\n\n" << RESET;
+
+    Matrix<double> A{{1., 0., 0.}, {0., 1., 0.}, {0., 0., 1.}};
+
+    size_t rank1 = A.rank();
+
+    std::cout << rank1 << "\n";
+
+    Matrix<double> B{{8., 5., -2}, {4., 7., 20.}, {21., 18., 7}};
+
+    size_t rank2 = B.rank();
+
+    std::cout << rank2 << "\n";
+
+    Matrix<double> C{{1., 2., 0., 0.}, {2., 4., 0., 0.}, {-1., 2., 1., 1.}};
+
+    size_t rank3 = C.rank();
+
+    std::cout << rank3 << "\n";
+
+}
+
 static void all_test()
 {
     test_ex00();
@@ -788,6 +866,8 @@ static void all_test()
     test_ex09();
     test_ex10();
     test_ex11();
+    test_ex12();
+    test_ex13();
 }
 
 int main(int ac, char **av)
@@ -812,6 +892,8 @@ int main(int ac, char **av)
         {"ex09", test_ex09},
         {"ex10", test_ex10},
         {"ex11", test_ex11},
+        {"ex12", test_ex12},
+        {"ex13", test_ex13},
     };
 
     const std::string key(av[1]);

@@ -36,10 +36,14 @@ struct Matrix
     //     : rows(other.rows), cols(other.cols), data(other.data) {}
 
     K& operator()(size_t i, size_t j) {
+        if (i >= rows || j >= cols)
+            throw std::out_of_range("matrix index");
         return data[i * cols + j];
     }
 
     const K& operator()(size_t i, size_t j) const {
+        if (i >= rows || j >= cols)
+            throw std::out_of_range("matrix index");
         return data[i * cols + j];
     }
 
@@ -88,11 +92,11 @@ struct Matrix
     //1-norm: ∥v∥1 (also called the Taxicab norm or Manhattan norm)
     K norm_l1() const
     {
-        K norm = (0);
+        K norm = K(0);
         for (size_t j = 0; j < cols; j++) {
             K col_sum = K(0);
             for (size_t i = 0; i < rows; i++) {
-                col_sum += abs((data[i * cols + j]));
+                col_sum += std::abs((data[i * cols + j]));
             }
             norm = std::max(col_sum, norm);
         }
@@ -130,11 +134,11 @@ struct Matrix
     //∞-norm: ∥v∥∞ (also called the supremum norm)
     K norm_inf() const
     {
-        K norm = (0);
+        K norm = K(0);
         for (size_t i = 0; i < rows; i++) {
             K row_sum = K(0);
             for (size_t j = 0; j < cols; j++) {
-                row_sum += abs(data[i * cols + j]);
+                row_sum += std::abs(data[i * cols + j]);
             }
             norm = std::max(row_sum, norm);
         }
@@ -217,7 +221,7 @@ struct Matrix
     // a et b sont des nombres réel et i (l'unité imaginaire) est un nombre particulier tel que i² = -1
     // le conjugué de z, noté z̄, c'est juste inverser le signe de la partie imaginaire z̄ = a - ib
     // std::conj/conjf/conjl <ccomplex> 
-    Matrix<K> transpose()
+    Matrix<K> transpose() const
     {
         Matrix<K> result(cols, rows, K(0));
 
@@ -289,10 +293,10 @@ struct Matrix
             }
 
             // eliminate other rows (below pivot)
-            for (size_t k = pivot_row + 1; k < rows; k++) {
+            for (size_t k = i + 1; k < rows; k++) {
                 K mult = result(k, lead);
                 for (size_t j = 0; j < cols; j++) {
-                    result(k, j) -= mult * result(pivot_row, j);
+                    result(k, j) -= mult * result(i, j);
                 }
             }
             lead++;
@@ -365,6 +369,7 @@ struct Matrix
         return (result);
     }
 
+    //EX11
     // Si A de taille 1x1 le det est égale a son élément
     //                2x2 det(a b) = ad - bc 
     //                       c d
@@ -423,7 +428,59 @@ struct Matrix
         return (det);
     }
 
-    
+    //EX12
+    // une matrice se dit inversible tel que  A−1A = AA-1 = I (son identité)
+    // A devient I (A-1A = I)
+    // I divent A-1 (A-1I = A-1)
+    Matrix<K> inverse() const
+    {
+        size_t c_aug = 2 * cols; 
+        Matrix<K> m_aug(rows, c_aug, K(0));
+        Matrix<K> temp = *this;
+        Matrix<K> result(rows, cols, K(0));
+        if (!is_square())
+            throw std::invalid_argument("Error: matrix must be square");
+        else if (determinant() == 0)
+            throw std::domain_error("Error: a matrix with a det(A) == 0, is not inversible");
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                m_aug(i, j) = temp(i, j);
+            }
+            m_aug.data[i * c_aug + cols + i] = K(1);
+        }
+        Matrix<K> rref = m_aug.reduce_row_echelon();
+        for (size_t k = 0; k < rows; k++) {
+            for (size_t l = 0; l < cols; l++) {
+                // k = 2 * 6 + 1 + l = 3 = 16
+                // 0  1  2  | 3  4  5
+                // 6  7  8  | 9  10 11
+                // 12 13 14 | 15 (16) 17
+                result(k, l) = rref.data[k * c_aug + cols + l]; 
+            }
+        }
+        return (result);
+    }
+
+    //EX13
+    //fn rank::<K>(&mut self) -> usize;
+    //Le rang d'une matrice est le nombre maximal de lignes ou de colonnes linéairement indépendantes dans cette matrice.
+    // on peut dire aussi que le rang donne la dimension de la matrice.
+    //le rank ne peut être plus grand que ça largeur (cols)
+    //si la matrice est carré et que le determinant est non-null alors la rank est égale au nombre de rows
+    size_t rank() const
+    {
+
+        Matrix<K> temp = row_echelon();
+        size_t rank = 0;
+        
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                if (temp(i, j) != K(0)) {
+                    rank++;
+                    break ;
+                }
+            }
+        }
+        return (rank);
+    }
 };
-
-

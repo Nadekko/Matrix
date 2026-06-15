@@ -1,5 +1,5 @@
 #include "../include/vectors.hpp"
-#include "../include/martices.hpp"
+#include "../include/matrices.hpp"
 
 // EX01
 template<typename K>

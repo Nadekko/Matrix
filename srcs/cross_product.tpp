@@ -2,7 +2,7 @@
 
 // fn cross_product::<K>(u: &Vector::<K>, v: &Vector::<K>) -> Vector::<K>;
 // the result is a vector, perpendicular by the other two
-// and his lenght equal the parallelogram area product by the two vector a and b.
+// its length equals the area of the parallelogram formed by u and v
 // cx = aybz - azby
 // cy = azbx - axbz
 // cz = axby - aybx
