@@ -1,5 +1,6 @@
 #pragma once
 
+#include "vectors.hpp"
 #include <vector>
 #include <iostream>
 #include <iomanip>
@@ -62,6 +63,15 @@ struct Matrix
                 std::cout << std::setw(6) << std::fixed << std::setprecision(3) << data[i * cols + j] << std::setw(2) << " ";
             }
             std::cout << "]\n";
+        }
+    }
+
+    void print_proj() const {
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                std::cout << std::fixed << std::setprecision(1) << data[i * cols + j] << " ";
+            }
+            std::cout << "\n";
         }
     }
 
