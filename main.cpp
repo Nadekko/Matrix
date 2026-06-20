@@ -857,20 +857,20 @@ static void test_ex13() {
 // ./projection > proj
 // ./display
 
-static void test_ex14()  {
+// static void test_ex14()  {
 
-    // std::cout << BIWHITE << "/* * * TEST EX14 (projection) * * */\n\n" << RESET;
+//     // std::cout << BIWHITE << "/* * * TEST EX14 (projection) * * */\n\n" << RESET;
 
-    float fov   = 60.0f * (3.14159265f / 180.0f); // 60° en radians
-    float ratio = 16.0f / 9.0f;                    // fenêtre 16:9
-    float near  = 0.1f;
-    float far   = 100.0f;
+//     float fov   = 60.0f * (3.14159265f / 180.0f); // 60° en radians
+//     float ratio = 16.0f / 9.0f;                    // fenêtre 16:9
+//     float near  = 0.1f;
+//     float far   = 100.0f;
 
-    Matrix<float> P = projection<float>(fov, ratio, near, far);
+//     Matrix<float> P = projection<float>(fov, ratio, near, far);
 
-    P.print();
+//     P.print();
 
-}
+// }
 
 static void all_test()
 {
@@ -888,7 +888,7 @@ static void all_test()
     test_ex11();
     test_ex12();
     test_ex13();
-    test_ex14();
+    // test_ex14();
 }
 
 int main(int ac, char **av)
@@ -915,7 +915,7 @@ int main(int ac, char **av)
         {"ex11", test_ex11},
         {"ex12", test_ex12},
         {"ex13", test_ex13},
-        {"ex14", test_ex14},
+        // {"ex14", test_ex14},
     };
 
     const std::string key(av[1]);

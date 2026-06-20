@@ -2,7 +2,7 @@
 
 //EX14 (bonus)
 // ratio : ratio de la fenêtre (la largeur de la fenêtre divisé par sa hauteur)
-// angle : angle de vue de la caméra (70° pour un œil humain)
+// angle : angle de vue de la caméra (70° pour un oeil humain)
 // near : distance la plus proche de la caméra qu'il faut afficher
 // far : distance la plus éloignée de la caméra qu'il faut afficher
 // f = 1.0 / tan(fov / 2.0)

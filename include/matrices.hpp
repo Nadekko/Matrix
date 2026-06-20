@@ -69,7 +69,9 @@ struct Matrix
     void print_proj() const {
         for (size_t i = 0; i < rows; i++) {
             for (size_t j = 0; j < cols; j++) {
-                std::cout << std::fixed << std::setprecision(1) << data[i * cols + j] << " ";
+                std::cout << std::fixed << std::setprecision(1) << data[i * cols + j];
+                if (j != cols - 1)
+                    std::cout << ", ";
             }
             std::cout << "\n";
         }
