@@ -26,7 +26,7 @@ Matrix<K> projection(float fov, float ratio, float near, float far)
     P(1, 1) = f;
 
     P(2, 2) = far / (near - far);
-    P(3, 2) = std::fma(near, far, 0.f) / (near - far); // near*far / (near-far)
+    P(3, 2) = std::fma(near, far, 0.0f) / (near - far); // near*far / (near-far)
 
     P(2, 3) = -1.0f;
 

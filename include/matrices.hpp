@@ -58,7 +58,7 @@ struct Matrix
             for (size_t j = 0; j < cols; j++) {
                 // A = 1, 2, 3
                 //     4, 5, 6
-                // stocker tel que A = 1., 2., 3., 4., 5., 6. (pas de colonnes pas de lignes)
+                // stocker tel que A = 1., 2., 3., 4., 5., 6. (sur une seul ligne)
                 // i=1, j=1 : data[1*3+1] = 4 -> indice 4 : valeur 5
                 std::cout << std::setw(6) << std::fixed << std::setprecision(3) << data[i * cols + j] << std::setw(2) << " ";
             }
@@ -127,7 +127,7 @@ struct Matrix
     //Frobenius norm: ∥A∥_F = √(Σᵢⱼ aᵢⱼ²)
     K norm_F() const
     {
-        K norm= pythagore_impl();
+        K norm = pythagore_impl();
 
         // if the vector is zero, root is zero
         if (norm == K(0)) { return (norm); }
@@ -197,7 +197,7 @@ struct Matrix
             for (size_t j = 0; j < cols; j++) {
                 for (size_t k = 0; k < mat.cols; k++) {
                     if constexpr (std::is_floating_point_v<K>)
-                        result.data[i * mat.cols + k] = fma(data[i * cols + j], mat.data[j * mat.cols + k], result.data[i * mat.cols + k]);
+                        result.data[i * mat.cols + k] = std::fmaf(data[i * cols + j], mat.data[j * mat.cols + k], result.data[i * mat.cols + k]);
                     else
                         result.data[i * mat.cols + k] += data[i * cols + j] * mat.data[j * mat.cols + k];
                 }
