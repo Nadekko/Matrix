@@ -2,9 +2,34 @@
 #include "../include/matrices.hpp"
 
 // EX01
+// Multipplier des vecteurs par des scalaires et les addtionner:
+
+//     v1 = [1, 0], v2 = [0, 1];
+//     coef = [3, 5];
+
+//     résultat = 3 * [1, 0] + 5 * [0, 1];
+
+// Décrire n'importle quel point d'un espace à partir de vecteurs de base
+
+// Quand l'utiliser
+
+// Transformer des coordonnées (c'est la base des matrices de transformation)
+// Exprimer un vecteur comme combinaison d'autres vecteurs (base de l'algèbre linéaire)
+// Shaders 3D, physique, machine learning
+
+// Graphisme 3D: Décrire n'importe quel point d'un espace à partir de vecteurs de base,
+// Mécanique:    Combiner des forces qui s'appliquent sur un objet,
+// Machine Learning: Chaque couche d'un réseau de neurones est une combinaison linéaire
+
+// résoudre des systemes d'équations
+// créer des espaces géométriques
+
+// * * * VECTORS * * *//
 template<typename K>
 Vector<K> linear_combination(const std::vector<Vector<K>>& u, const std::vector<K>& coefs)
 {
+    if (u.empty() || coefs.empty())
+        throw std::invalid_argument("Error : one or both entry are empty");
     if (u.size() != coefs.size())
         throw std::length_error("Error : u element count (" + std::to_string(u.size())
             + ") must match coefs element count (" + std::to_string(coefs.size()) + ")");
@@ -28,6 +53,46 @@ Vector<K> linear_combination(const std::vector<Vector<K>>& u, const std::vector<
                 result.data[j] = std::fma(coefs[i], u[i].data[j], result.data[j]);
             else
                 result.data[j] += coefs[i] * u[i].data[j];
+        }
+    }
+    return (result);
+}
+
+
+// * * * MATRIX * * *//
+template <typename K>
+Matrix<K> linear_combination(const std::vector<Matrix<K>>& u, const std::vector<K>& coefs)
+{
+    if (u.empty() || coefs.empty())
+        throw std::invalid_argument("Error : one or both entry are empty");
+    
+    if (u.size() != coefs.size())
+        throw std::length_error("Error : u element count (" + std::to_string(u.size())
+            + ") must match coefs element count (" + std::to_string(coefs.size()) + ")");
+    
+    size_t len = u[0].size();
+    if (len == 0)
+        throw std::invalid_argument("Error : size is 0");
+    for (size_t i = 1; i < u.size(); i++) {
+        if (len != u[i].size()) {
+            throw std::length_error("Error : all row in u must have the same size");
+        }
+    }
+
+    int rows = u[0].rows;
+    int cols = u[0].cols;
+
+    Matrix<K> result(rows, cols, K(0));
+
+    for (size_t i = 0; i < u.size(); i++) {
+        for (size_t r = 0; r < u[i].rows; r++) {
+            for (size_t c = 0; c < u[i].cols; c++) {
+
+                if constexpr (std::is_floating_point_v<K>)
+                    result(r, c) = std::fma(coefs[i], u[i](r, c), result(r, c));
+                else
+                    result(r, c) += coefs[i] * u[i](r, c);
+            }
         }
     }
     return (result);
@@ -76,22 +141,3 @@ void print_linear_combination_info(const std::vector<Vector<float>>& u, const st
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
 }
-
-// Multipplier des vecteurs par des scalaires et les addtionner:
-
-//     v1 = [1, 0], v2 = [0, 1];
-//     coef = [3, 5];
-
-//     résultat = 3 * [1, 0] + 5 * [0, 1];
-
-// Décrire n'importle quel point d'un espace à partir de vecteurs de base
-
-// Quand l'utiliser
-
-// Transformer des coordonnées (c'est la base des matrices de transformation)
-// Exprimer un vecteur comme combinaison d'autres vecteurs (base de l'algèbre linéaire)
-// Shaders 3D, physique, machine learning
-
-// Graphisme 3D: Décrire n'importe quel point d'un espace à partir de vecteurs de base,
-// Mécanique:    Combiner des forces qui s'appliquent sur un objet,
-// Machine Learning: Chaque couche d'un réseau de neurones est une combinaison linéaire

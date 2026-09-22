@@ -60,7 +60,7 @@ struct Matrix
                 //     4, 5, 6
                 // stocker tel que A = 1., 2., 3., 4., 5., 6. (sur une seul ligne)
                 // i=1, j=1 : data[1*3+1] = 4 -> indice 4 : valeur 5
-                std::cout << std::setw(6) << std::fixed << std::setprecision(3) << data[i * cols + j] << std::setw(2) << " ";
+                std::cout << std::setw(6) << std::fixed << std::setprecision(3) << (*this)(i, j) << std::setw(2) << " ";
             }
             std::cout << "]\n";
         }
@@ -69,7 +69,7 @@ struct Matrix
     void print_proj() const {
         for (size_t i = 0; i < rows; i++) {
             for (size_t j = 0; j < cols; j++) {
-                std::cout << std::fixed << std::setprecision(1) << data[i * cols + j];
+                std::cout << std::fixed << std::setprecision(1) << (*this)(i, j);
                 if (j != cols - 1)
                     std::cout << ", ";
             }
@@ -77,7 +77,8 @@ struct Matrix
         }
     }
 
-    // EX00 
+    // EX00
+    // appliqué à chaque élément de la matrice
     void    add(const Matrix<K>& m)
     {
         if (shape() != m.shape())
@@ -100,15 +101,54 @@ struct Matrix
             val *= a;
     }
 
+    // EX03
+    /*
+        A · B = ∑∑ A[i][j] × B[i][j]
+        mesure l'alignement entre deux matrices
+        Soit A = |1  2|  et B = |3  4|
+                 |5  6|         |7  8|
+
+        A·B = (1*3) + (2*4) + (5*7) + (6*8)
+        A·B = 3 + 8 + 35 + 48 = 94
+
+        A·B = ||A||_F × ||B||_F × cos(θ)  (interprétation géométrique générale)
+        où θ désigne l'angle entre A et B dans l'espace des matrices.
+
+        A·B > 0 --> θ est aigu, les matrices sont alignées.
+        A·B < 0 --> θ est obtus, les matrices vont dans des directions opposées.
+        A·B = 0 --> les matrices sont orthogonales (pas de similarité).
+
+        Combine deux matrices pour obtenir un scalaire, indiquant si les deux matrices 
+        vont dans la même direction (dans l'espace de Frobenius).
+    */
+    K frobenius_dot_product(const Matrix<K>& B) const
+    {
+        if (shape() != B.shape())
+            throw std::invalid_argument("Error : Matrices must have the same dimensions");
+        
+        K result = K(0);
+
+        for (size_t i = 0; i < rows; i++) {
+            for (size_t j = 0; j < cols; j++) {
+                if constexpr(std::is_floating_point_v<K>)
+                    result = std::fma((*this)(i, j), B(i, j), result);
+                else
+                    result += (*this)(i, j) * B(i, j);
+            }
+        }
+        return (result);
+    }
+
     // EX04
     //1-norm: ∥v∥1 (also called the Taxicab norm or Manhattan norm)
+    // max col
     K norm_l1() const
     {
         K norm = K(0);
         for (size_t j = 0; j < cols; j++) {
             K col_sum = K(0);
             for (size_t i = 0; i < rows; i++) {
-                col_sum += std::abs((data[i * cols + j]));
+                col_sum += std::abs((*this)(i, j));
             }
             norm = std::max(col_sum, norm);
         }
@@ -124,7 +164,21 @@ struct Matrix
         return (sum);
     }
 
-    //Frobenius norm: ∥A∥_F = √(Σᵢⱼ aᵢⱼ²)
+    K method_sqrt(K val) const
+    {
+        K x = val / K(2);
+        K prev = K(0);
+
+        while (x != prev)
+        {
+            prev = x;
+            x = (x + (val / x)) / K(2);
+        }
+        return (x);
+    }
+
+    //Frobenius norm: ∥A∥_F = √(Σᵢⱼ aᵢⱼ²) 
+    // mesure la "grandeur" d'une matrice (distance/magnitude)
     K norm_F() const
     {
         K norm = pythagore_impl();
@@ -133,24 +187,18 @@ struct Matrix
         if (norm == K(0)) { return (norm); }
         
         // méthode de Heron + méthode de Newton-Raphson
-        K x = norm / K(2);
-        K prev = K(0);
-
-        while (x != prev) {
-            prev = x;
-            x = (x + (norm / x)) / K(2);
-        }
-        return (x);
+        return (method_sqrt(norm));
     }
 
     //∞-norm: ∥v∥∞ (also called the supremum norm)
+    // max row
     K norm_inf() const
     {
         K norm = K(0);
         for (size_t i = 0; i < rows; i++) {
             K row_sum = K(0);
             for (size_t j = 0; j < cols; j++) {
-                row_sum += std::abs(data[i * cols + j]);
+                row_sum += std::abs((*this)(i, j));
             }
             norm = std::max(row_sum, norm);
         }
@@ -162,6 +210,7 @@ struct Matrix
     // u est dans Rn -> n élémentes
     // result dans Rm -> m éléments
     // multiplacation de chaque elements par ligne de la matrice par chaque elements du vector
+    // applique une transfrmation géométrique (rotation, mise à l'échelle, pojection)
     Vector<K> mul_vec(const Vector<K>& vec) const
     {
         if (vec.size() != cols)
@@ -173,9 +222,9 @@ struct Matrix
         for (size_t i = 0; i < rows; i++) {
             for (size_t j = 0; j < cols; j++) {
                 if constexpr (std::is_floating_point_v<K>)
-                    result.data[i] = fma(data[i * cols + j], vec.data[j], result.data[i]);
+                    result.data[i] = fma((*this)(i, j), vec.data[j], result.data[i]);
                 else
-                    result.data[i] += data[i * cols + j] * vec.data[j];
+                    result.data[i] += (*this)(i, j) * vec.data[j];
             }
         }
         return (result);
@@ -184,7 +233,8 @@ struct Matrix
     // A est m*n
     // B est n*p; le nombre colonnes dans A doivent être égale au nombre de lignes dans B
     // result est m*p
-    // multication de chaque elements par ligne de la matrice A par chaque elements par colonne de la matrice B 
+    // multication de chaque elements par ligne de la matrice A par chaque elements par colonne de la matrice B
+    //combine plusieurs transformations en une seul opération
     Matrix<K> mul_mat(const Matrix<K>& mat) const
     {
         if (cols != mat.rows)
@@ -197,9 +247,9 @@ struct Matrix
             for (size_t j = 0; j < cols; j++) {
                 for (size_t k = 0; k < mat.cols; k++) {
                     if constexpr (std::is_floating_point_v<K>)
-                        result.data[i * mat.cols + k] = std::fmaf(data[i * cols + j], mat.data[j * mat.cols + k], result.data[i * mat.cols + k]);
+                        result.data[i * mat.cols + k] = std::fmaf((*this)(i, j), mat.data[j * mat.cols + k], result.data[i * mat.cols + k]);
                     else
-                        result.data[i * mat.cols + k] += data[i * cols + j] * mat.data[j * mat.cols + k];
+                        result.data[i * mat.cols + k] += (*this)(i, j) * mat.data[j * mat.cols + k];
                 }
             }
         }
@@ -207,7 +257,7 @@ struct Matrix
     }
 
     //EX08
-    // la trace d'une matrice carré est la somme de ses coefficients diagonaux. noté Tr(M)
+    // la trace d'une matrice carré est la somme de ses éléments diagonaux. noté Tr(M)
     K   trace() const
     {
         if (!is_square())
@@ -216,23 +266,25 @@ struct Matrix
         K result = K(0);
 
         for (size_t i = 0; i < rows; i++) {
-                result += data[i * cols + i];
+                result += (*this)(i, i);
         }
         return (result);
     }
 
     //EX09
-    // chaque row d'une matrice devient une colonne
-    // utile pour la compatibilté entre C/C++ et les API de rendu comme OpenGL
-    // C/C++ les matrices sont stocker lignes par lignes en mémoires
-    // OpenGL interprète par défaut les matrices fournis colonnes par colonnes
-    // Matrice réelle       ->  A* = Aᵀ (identique car le conjugate d'un nombre réelle est lui même)
-    // Matrice complexe     ->  A* ≠ Aᵀ (il faut en plus conjuguer)
-    // Matrice Hermitienne  ->  A = A* (idantique à sa propre conjugate transpose)
-    // un nombre complexe z peut se présenté tel que z = a + ib,
-    // a et b sont des nombres réel et i (l'unité imaginaire) est un nombre particulier tel que i² = -1
-    // le conjugué de z, noté z̄, c'est juste inverser le signe de la partie imaginaire z̄ = a - ib
-    // std::conj/conjf/conjl <ccomplex> 
+    /*
+        chaque row d'une matrice devient une colonne
+        utile pour la compatibilté entre C/C++ et les API de rendu comme OpenGL
+        C/C++ les matrices sont stocker lignes par lignes en mémoires
+        OpenGL interprète par défaut les matrices fournis colonnes par colonnes
+        Matrice réelle       ->  A* = Aᵀ (identique car le conjugate d'un nombre réelle est lui même)
+        Matrice complexe     ->  A* ≠ Aᵀ (il faut en plus conjuguer)
+        Matrice Hermitienne  ->  A = A* (identique à sa propre conjugate transpose)
+        un nombre complexe z peut se présenté tel que z = a + ib,
+        a et b sont des nombres réel et i (l'unité imaginaire) est un nombre particulier tel que i² = -1
+        le conjugué de z, noté z̄, c'est juste inverser le signe de la partie imaginaire z̄ = a - ib
+        std::conj/conjf/conjl <ccomplex>
+    */ 
     Matrix<K> transpose() const
     {
         Matrix<K> result(cols, rows, K(0));
@@ -249,7 +301,8 @@ struct Matrix
 
     //EX10
     // REF (row echelon form) ou RREF (reduce row echelon form)
-    // algorithm élimination de Gauss
+    // élimination Gaussienne
+    // résoudre des équations / calculer le rang / trouver l'inverse
     // Elementary Row Operation
     // - Multiply (or divide) by a non-zero constant
     // - Inter change two row
@@ -475,10 +528,10 @@ struct Matrix
 
     //EX13
     //fn rank::<K>(&mut self) -> usize;
-    //Le rang d'une matrice est le nombre maximal de lignes ou de colonnes linéairement indépendantes dans cette matrice.
+    //Le rang d'une matrice est le nombre maximal de lignes ou de colonnes linéairement indépendantes dans une matrice.
     // on peut dire aussi que le rang donne la dimension de la matrice.
-    //le rank ne peut être plus grand que ça largeur (cols)
-    //si la matrice est carré et que le determinant est non-null alors la rank est égale au nombre de rows
+    // le rank ne peut être plus grand que ça largeur (cols)
+    // si la matrice est carré et que le determinant est non-null alors la rank est égale au nombre de rows
     size_t rank() const
     {
 

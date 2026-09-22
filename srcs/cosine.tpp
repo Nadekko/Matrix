@@ -1,10 +1,15 @@
 #include "../include/vectors.hpp"
 
+// cos(θ) proche de 1  -> vecteurs alignés -> très similaires
+// cos(θ) proche de 0  -> vecteurs orthogonaux -> pas de lien
+// cos(θ) proche de -1 -> vecteurs opposés -> très différents
+// mesure de ressamblance entre deux objets
+
 // fn angle_cos::<K>(u: &Vector::<K>, v: &Vector::<K>) -> f32;
 // cos(θ) = u⋅v / ​∣∣u∣∣*∣∣v∣∣ 
 // function return the value of cos(θ) (-1 =< x <= 1)
 template <typename K>
-K angle_cos(const Vector<K>& u, const Vector<K>& v)
+K angle_cos_vec(const Vector<K>& u, const Vector<K>& v)
 {
     if (u.size() != v.size())
         throw std::length_error("Error : u element count (" + std::to_string(u.size())
@@ -18,7 +23,19 @@ K angle_cos(const Vector<K>& u, const Vector<K>& v)
     return (angle_cos);
 }
 
+template <typename K>
+K angle_cos_mat(const Matrix<K>& u, const Matrix<K>& v)
+{
+    if (u.shape() != v.shape())
+        throw std::invalid_argument("Error : Matrices must have the same shape");
+    
+    K frob_product = u.norm_F() * v.norm_F();
+    if (frob_product == K(0))
+        throw std::domain_error("Error : angle is undefined for zero-size matrices");
+    K angle_cos = u.frobenius_dot_product(v) / frob_product;
 
+    return (angle_cos);
+}
 
 
 // optionel function to get the value of the angle

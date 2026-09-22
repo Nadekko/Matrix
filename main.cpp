@@ -120,6 +120,22 @@ static void test_ex01() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
+
+    try {
+        std::vector<Matrix<float>> u = {
+            Matrix<float> {{1.f, 2.f, 0.0}, {4.f, 1.f, 1.f}, {1.f, 5.f, 0.f}},
+            Matrix<float> {{1.f, 2.f, 0.0}, {4.f, 1.f, 1.f}, {1.f, 5.f, 0.f}},
+            Matrix<float> {{8.f, 2.f, 0.0}, {2.f, 1.f, 1.f}, {7.f, 3.f, 0.f}},
+        };
+        std::vector<float> c5{1.f, 5.f, 3.f};
+
+        Matrix<float> u1 = linear_combination(u, c5);
+
+        u1.print();
+    }
+    catch (std::invalid_argument &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
 }
 
 static void test_ex02() {
@@ -148,7 +164,7 @@ static void test_ex02() {
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
-        float r3 = lerp(0.f, 1.f, 0.f);
+        float r3 = lerp(0.45f, 0.18f, 0.30f);
 
         std::cout << r3 << "\n";
     }
@@ -254,6 +270,23 @@ static void test_ex03() {
     catch (std::length_error &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 5
+    try {
+        Matrix<float> u {{2.f, 4.f, 1.f}, {1.f, 7.f, 3.f}, {4.f, 0.f, 3.f}};
+        Matrix<float> v {{0.f, 1.f, 3.f}, {7.f, 6.f, 1.f}, {1.f, 2.f, 4.f}};
+
+        std::cout << "u = \n";
+        u.print();
+        std::cout << "\n";
+        std::cout << "v = \n";
+        v.print();
+        std::cout << "\n";
+        std::cout << u.frobenius_dot_product(v) << "\n"; 
+    }
+    catch (std::invalid_argument &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
 }
 
 static void test_ex04() {
@@ -311,7 +344,7 @@ static void test_ex05() {
         Vector<float> u1{0.f, 0.f, 0.f};
         Vector<float> u2{1.f, 2.f, 3.f};
 
-        float a_cos = angle_cos(u1, u2);
+        float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
     catch (std::domain_error &e) {
@@ -323,7 +356,7 @@ static void test_ex05() {
         Vector<float> u1{2.f, 4.f, -2.f};
         Vector<float> u2{5.f, 1.f};
 
-        float a_cos = angle_cos(u1, u2);
+        float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
     catch (std::length_error &e) {
@@ -335,7 +368,7 @@ static void test_ex05() {
         Vector<float> u1{1.f, 0.f};
         Vector<float> u2{1.f, 0.f};
 
-        float a_cos = angle_cos(u1, u2);
+        float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
     catch (std::domain_error &e) {
@@ -347,7 +380,7 @@ static void test_ex05() {
         Vector<float> u1{1.f, 0.f};
         Vector<float> u2{0.f, 1.f};
 
-        float a_cos = angle_cos(u1, u2);
+        float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
     catch (std::domain_error &e) {
@@ -359,7 +392,7 @@ static void test_ex05() {
         Vector<float> u1{-1.f, 1.f};
         Vector<float> u2{1.f, -1.f};
 
-        float a_cos = angle_cos(u1, u2);
+        float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
     catch (std::domain_error &e) {
@@ -371,7 +404,7 @@ static void test_ex05() {
         Vector<float> u1{2.f, 1.f};
         Vector<float> u2{4.f, 2.f};
 
-        float a_cos = angle_cos(u1, u2);
+        float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos <<  "\n";
     }
     catch (std::domain_error &e) {
@@ -383,7 +416,19 @@ static void test_ex05() {
         Vector<float> u1{1.f, 2.f, 3.f};
         Vector<float> u2{4.f, 5.f, 6.f};
 
-        float a_cos = angle_cos(u1, u2);
+        float a_cos = angle_cos_vec(u1, u2);
+        std::cout << "cos(θ) = " << a_cos << "\n";
+    }
+    catch (std::domain_error &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;  
+    }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 8
+    try {
+        Matrix<float> u{{2.f, 3.f, 4.f}, {0.f, 7.f, 5.f}, {1.f, 2.f, 1.f}};
+        Matrix<float> v{{0.f, 2.f, 4.f}, {7.f, 1.f, 3.f}, {0.f, 5.f, 9.f}};
+
+        float a_cos = angle_cos_mat(u, v);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
     catch (std::domain_error &e) {

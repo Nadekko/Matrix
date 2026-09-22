@@ -18,17 +18,17 @@ Matrix<K> projection(float fov, float ratio, float near, float far)
 {
     Matrix<K> P(4, 4, 0.0f);
 
-    float   f = 1 / std::tan(fov / 2);
+    float   f = 1 / std::tan(fov / 2); // facteur d'échelle basé sur l'angle
 
 
-    P(0, 0) = f / ratio;
+    P(0, 0) = f / ratio; // ajuste la largeur selon le ratio de l'écran
 
-    P(1, 1) = f;
+    P(1, 1) = f; // ajuste selon l'angle de vue
 
     P(2, 2) = far / (near - far);
+    P(2, 3) = -1.0f; // force la division par w / effet de perspective
     P(3, 2) = std::fma(near, far, 0.0f) / (near - far); // near*far / (near-far)
-
-    P(2, 3) = -1.0f;
-
+    // convertit la profondeur (z) en valeur normalisée
+    // pour le depth buffer (distance à la caméra)
     return (P);
 }

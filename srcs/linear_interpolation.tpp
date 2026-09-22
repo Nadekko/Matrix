@@ -3,6 +3,7 @@
 
 // EX02
 
+// estimer une valeur inconnue située entre deux points de données connus en traçant une ligne droite
 //fn lerp::<V>(u: V, v: V, t: f32) -> V;
 // u + t * (v - u)
 // lerp : use to travel progressivly between two data.
