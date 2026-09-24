@@ -1,4 +1,5 @@
 #include "../include/vectors.hpp"
+#include "../include/matrices.hpp"
 
 // cos(θ) proche de 1  -> vecteurs alignés -> très similaires
 // cos(θ) proche de 0  -> vecteurs orthogonaux -> pas de lien
@@ -6,7 +7,7 @@
 // mesure de ressamblance entre deux objets
 
 // fn angle_cos::<K>(u: &Vector::<K>, v: &Vector::<K>) -> f32;
-// cos(θ) = u⋅v / ​∣∣u∣∣*∣∣v∣∣ 
+// cos(θ) = u⋅v / ||u||*||v|| 
 // function return the value of cos(θ) (-1 =< x <= 1)
 template <typename K>
 K angle_cos_vec(const Vector<K>& u, const Vector<K>& v)

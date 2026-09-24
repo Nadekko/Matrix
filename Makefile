@@ -5,6 +5,7 @@ CXX = c++
 CXXFLAGS = -std=c++17 -Wall -Wextra -Werror
 
 INC = $(wildcard include/*.hpp)
+TPP = $(wildcard srcs/*.tpp)
 
 SRCS = main.cpp
 OBJS = $(SRCS:.cpp=.o)
@@ -17,12 +18,12 @@ all: $(NAME)
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) $(OBJS) -o $(NAME)
 
-projection: $(NAME_P)
+bonus: $(NAME_P)
 
 $(NAME_P): $(OBJS_P)
 	$(CXX) $(CXXFLAGS) $(OBJS_P) -o $(NAME_P)
 
-%.o: %.cpp $(INC)
+%.o: %.cpp $(INC) $(TPP)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
@@ -33,4 +34,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all projection clean fclean re
+.PHONY: all bonus clean fclean re

@@ -17,44 +17,48 @@ static void test_ex00() {
 
     //test 1
     try {
+        std::cout << "test 01:\n";
         Vector<float> u{2.f, 3.f};
         Vector<float> v{5.f, 7.f};
         u.add(v);
         u.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
+        std::cout << "test 02:\n";
         Vector<float> u{2.f, 3.f};
         Vector<float> v{5.f, 7.f};
         u.sub(v);
         u.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
+        std::cout << "test 03:\n";
         Vector<float> u{2.f, 3.f};
         u.scl(2.f);
         u.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
-    //test 4
+    //test 4 (SHOULD THROW EXECPTION)
     try {
+        std::cout << "test 04:\n";
         Vector<float> u{2.f, 3.f};
         Vector<float> v{5.f, 7.f, 2.3f};
         u.add(v);
         u.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
 }
@@ -65,6 +69,7 @@ static void test_ex01() {
 
     //test 1
     try {
+        std::cout << "test 01:\n";
         std::vector<Vector<float>> v1 = {
             Vector<float> {2.f, 3.f, 4.f},
             Vector<float> {6.f, -7.f, 8.f},
@@ -78,12 +83,13 @@ static void test_ex01() {
 
         e1.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
+        std::cout << "test 02:\n";
         std::vector<Vector<float>> v2 = {
             Vector<float> {1.f, 0.f,  0.f},
             Vector<float> {0.f, 1.f,  0.f},
@@ -100,12 +106,13 @@ static void test_ex01() {
         e3.print();
 
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
-    //test 3
+    //test 3 (SHOULD THROW EXCEPTION)
     try {
+        std::cout << "test 03:\n";
         std::vector<Vector<float>> v3 = {
             Vector<float> {1.f, 0.f,  0.f},
             Vector<float> {0.f, 1.f,  0.f},
@@ -117,23 +124,41 @@ static void test_ex01() {
 
         e4.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
-
+    //test 4 (SHOULD THROW EXECPTION)
     try {
+        std::cout << "test 04:\n";
         std::vector<Matrix<float>> u = {
-            Matrix<float> {{1.f, 2.f, 0.0}, {4.f, 1.f, 1.f}, {1.f, 5.f, 0.f}},
+            Matrix<float> {{1.f, 2.f, 0.0}, {}, {1.f, 5.f, 0.f}},
             Matrix<float> {{1.f, 2.f, 0.0}, {4.f, 1.f, 1.f}, {1.f, 5.f, 0.f}},
             Matrix<float> {{8.f, 2.f, 0.0}, {2.f, 1.f, 1.f}, {7.f, 3.f, 0.f}},
         };
-        std::vector<float> c5{1.f, 5.f, 3.f};
+        std::vector<float> c5{1.f, 5.f};
 
         Matrix<float> u1 = linear_combination(u, c5);
 
         u1.print();
     }
-    catch (std::invalid_argument &e) {
+    catch (std::exception &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+    //test 5 (SHOULD THROW EXECPTION)
+    try {
+        std::cout << "test 05:\n";
+        std::vector<Matrix<float>> u = {
+            Matrix<float> {{}, {}, {}},
+            Matrix<float> {{}, {}, {}},
+            Matrix<float> {{}, {}, {}},
+        };
+        std::vector<float> c5{1.f, 5.f};
+
+        Matrix<float> u1 = linear_combination(u, c5);
+
+        u1.print();
+    }
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
 }
@@ -144,36 +169,40 @@ static void test_ex02() {
 
     //test 1
     try {
+        std::cout << "test 01:\n";
         float r1 = lerp(0.f, 1.f, 0.f);
 
         std::cout << r1 << "\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
+        std::cout << "test 02:\n";
         float r2 = lerp(0.f, 1.f, 1.f);
 
         std::cout << r2 << "\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
-    //test 3
+    //test 3 (SHOULDTHRPW EXCEPTION)
     try {
-        float r3 = lerp(0.45f, 0.18f, 0.30f);
+        std::cout << "test 03:\n";
+        float r3 = lerp(3.f, 1.f, 2.f);
 
         std::cout << r3 << "\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 4
     try {
+        std::cout << "test 04:\n";
         Vector<float> v1{2.f, 1.f};
         Vector<float> v2{4.f, 2.f};
 
@@ -181,12 +210,27 @@ static void test_ex02() {
 
         r1.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
-    //test 5
+    //test 5 (SHOULD THROW EXCEPTION)
     try {
+        std::cout << "test 05:\n";
+        Vector<float> v1{2.f, 4.f};
+        Vector<float> v2{0.6f, 2.f, 7.f};
+
+        Vector<float> r1 = lerp(v1, v2, 1.f);
+
+        r1.print();
+    }
+    catch (std::exception &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 6
+    try {
+        std::cout << "test 06:\n";
         Matrix<float> m1{{2.f, 1.f}, {3.f, 4.f}};
         Matrix<float> m2{{20.f, 10.f}, {30.f, 40.f}};
 
@@ -194,7 +238,21 @@ static void test_ex02() {
 
         m3.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 7 (SHOULD THROW EXCEPTION)
+    try {
+        std::cout << "test 07:\n";
+        Matrix<float> m1{{2.f, 1.f}, {3.f, 4.f}};
+        Matrix<float> m2{{20.f, 10.f}, {30.f, 40.f}, {12.f, 5.f}};
+
+        Matrix<float> m3 = lerp(m1, m2, 0.5f);
+
+        m3.print();
+    }
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
 }
@@ -205,6 +263,7 @@ static void test_ex03() {
 
     //test 1
     try {
+        std::cout << "test 01:\n";
         Vector<float> u{0.f, 0.f};
         Vector<float> v{1.f, 1.f};
 
@@ -216,12 +275,13 @@ static void test_ex03() {
         std::cout << "\n";
         std::cout << u.dot(v) << "\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
+        std::cout << "test 02:\n";
         Vector<float> u{1.f, 1.f};
         Vector<float> v{1.f, 1.f};
 
@@ -233,12 +293,13 @@ static void test_ex03() {
         std::cout << "\n";
         std::cout << u.dot(v) << "\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
+        std::cout << "test 03:\n";
         Vector<float> u{-1.f, 6.f};
         Vector<float> v{3.f, 2.f};
 
@@ -250,12 +311,13 @@ static void test_ex03() {
         std::cout << "\n";
         std::cout << u.dot(v) << "\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
-    //test 4
+    //test 4 (SHOULD THORW EXCEPTION)
     try {
+        std::cout << "test 04:\n";
         Vector<float> u{0.f, 0.f};
         Vector<float> v{1.f, 1.f, 2.f};
 
@@ -267,12 +329,13 @@ static void test_ex03() {
         std::cout << "\n";
         std::cout << u.dot(v) << "\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 5
     try {
+        std::cout << "test 05:\n";
         Matrix<float> u {{2.f, 4.f, 1.f}, {1.f, 7.f, 3.f}, {4.f, 0.f, 3.f}};
         Matrix<float> v {{0.f, 1.f, 3.f}, {7.f, 6.f, 1.f}, {1.f, 2.f, 4.f}};
 
@@ -284,7 +347,25 @@ static void test_ex03() {
         std::cout << "\n";
         std::cout << u.frobenius_dot_product(v) << "\n"; 
     }
-    catch (std::invalid_argument &e) {
+    catch (std::exception &e) {
+        std::cerr << RED << e.what() << "\n" << RESET;
+    }
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 6 (SHOULD THROW EXCEPTION)
+    try {
+        std::cout << "test 06:\n";
+        Matrix<float> u {{2.f, 4.f, 1.f}, {1.f, 7.f, 3.f}, {4.f, 0.f, 3.f}};
+        Matrix<float> v {{0.f, 1.f, 3.f}, {7.f, 6.f, 1.f}};
+
+        std::cout << "u = \n";
+        u.print();
+        std::cout << "\n";
+        std::cout << "v = \n";
+        v.print();
+        std::cout << "\n";
+        std::cout << u.frobenius_dot_product(v) << "\n"; 
+    }
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
 }
@@ -295,6 +376,7 @@ static void test_ex04() {
 
     std::cout << "norms for vectors\n\n";
     //test 1
+    std::cout << "test 01:\n";
     Vector<float> u1{0.f, 0.f, 0.f};
 
     std::cout << "||u||1 = " << u1.norm_l1() << "\n";
@@ -303,6 +385,7 @@ static void test_ex04() {
 
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
+    std::cout << "test 02:\n";
     Vector<float> u2{1.f, 2.f, 3.f};
 
     std::cout << "||u||1 = " << u2.norm_l1() << "\n";
@@ -311,6 +394,7 @@ static void test_ex04() {
 
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
+    std::cout << "test 03:\n";
     Vector<float> u3{-1.f, -2.f};
 
     std::cout << "||u||1 = " << u3.norm_l1() << "\n";
@@ -319,18 +403,20 @@ static void test_ex04() {
 
     std::cout << "\nnorms for matrices\n\n";
     //test 4
+    std::cout << "test 04:\n";
     Matrix<float> m1{{0.f, 0.f, 0.f}, {1.f, 1.f, 1.f}};
 
     std::cout << "||u||1 = " << m1.norm_l1() << "\n";
-    std::cout << "||u||  = " "√" << m1.pythagore_impl() << " ≈ " << m1.norm_F() << "\n";
+    std::cout << "||u||F = " "√" << m1.pythagore_impl() << " ≈ " << m1.norm_F() << "\n";
     std::cout << "||u||∞ = " << m1.norm_inf() << "\n";
 
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 5
-    Matrix<float> m2{{-4.f, 5.f, 6.f}, {3.f, -1.f, 1.f}};
+    std::cout << "test 05:\n";
+    Matrix<float> m2{{-4.f, -5.f, -6.f}, {-3.f, -1.f, -1.f}};
 
     std::cout << "||u||1 = " << m2.norm_l1() << "\n";
-    std::cout << "||u||  = " "√" << m2.pythagore_impl() << " ≈ " << m2.norm_F() << "\n";
+    std::cout << "||u||F = " "√" << m2.pythagore_impl() << " ≈ " << m2.norm_F() << "\n";
     std::cout << "||u||∞ = " << m2.norm_inf() << "\n";
 
 }
@@ -339,99 +425,107 @@ static void test_ex05() {
     
     std::cout << BIWHITE << "/* * * TEST EX05 (cosine) * * */\n\n" << RESET;
 
-    //test 1
+    //test 1 (SHOULD THROW EXCEPTION)
     try {
+        std::cout << "test 01:\n";
         Vector<float> u1{0.f, 0.f, 0.f};
         Vector<float> u2{1.f, 2.f, 3.f};
 
         float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
-    catch (std::domain_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;  
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
-    //test 2
+    //test 2 (SHOULD THROW EXCEPTION)
     try {
+        std::cout << "test 02:\n";
         Vector<float> u1{2.f, 4.f, -2.f};
         Vector<float> u2{5.f, 1.f};
 
         float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
+        std::cout << "test 03:\n";
         Vector<float> u1{1.f, 0.f};
         Vector<float> u2{1.f, 0.f};
 
         float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
-    catch (std::domain_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;  
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 4
     try {
+        std::cout << "test 04:\n";
         Vector<float> u1{1.f, 0.f};
         Vector<float> u2{0.f, 1.f};
 
         float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
-    catch (std::domain_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;  
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 5
     try {
+        std::cout << "test 05:\n";
         Vector<float> u1{-1.f, 1.f};
         Vector<float> u2{1.f, -1.f};
 
         float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
-    catch (std::domain_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;  
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 6
     try {
+        std::cout << "test 06:\n";
         Vector<float> u1{2.f, 1.f};
         Vector<float> u2{4.f, 2.f};
 
         float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos <<  "\n";
     }
-    catch (std::domain_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;  
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 7
     try {
+        std::cout << "test 07:\n";
         Vector<float> u1{1.f, 2.f, 3.f};
         Vector<float> u2{4.f, 5.f, 6.f};
 
         float a_cos = angle_cos_vec(u1, u2);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
-    catch (std::domain_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;  
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 8
     try {
+        std::cout << "test 08:\n";
         Matrix<float> u{{2.f, 3.f, 4.f}, {0.f, 7.f, 5.f}, {1.f, 2.f, 1.f}};
         Matrix<float> v{{0.f, 2.f, 4.f}, {7.f, 1.f, 3.f}, {0.f, 5.f, 9.f}};
 
         float a_cos = angle_cos_mat(u, v);
         std::cout << "cos(θ) = " << a_cos << "\n";
     }
-    catch (std::domain_error &e) {
+    catch (std::exception &e) {
         std::cerr << RED << e.what() << "\n" << RESET;  
     }
 }
@@ -440,8 +534,9 @@ static void test_ex06() {
 
     std::cout << BIWHITE << "/* * * TEST EX06 (cross product) * * */\n\n" << RESET;
 
-    //test 1
+    //test 1 (SHOULD THROW EXCEPTION)
     try {
+        std::cout << "test 01:\n";
         Vector<float> u{2.f, 3.f};
         Vector<float> v{-6.f, 5.f, 1.f};
 
@@ -449,12 +544,13 @@ static void test_ex06() {
 
         cp.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
+        std::cout << "test 02:\n";
         Vector<float> u{0.f, 0.f, 1.f};
         Vector<float> v{1.f, 0.f, 0.f};
 
@@ -462,12 +558,13 @@ static void test_ex06() {
 
         cp.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
+        std::cout << "test 03:\n";
         Vector<float> u{1.f, 2.f, 3.f};
         Vector<float> v{4.f, 5.f, 6.f};
 
@@ -475,12 +572,13 @@ static void test_ex06() {
 
         cp.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 4
     try {
+        std::cout << "test 04:\n";
         Vector<float> u{4.f, 2.f, -3.f};
         Vector<float> v{-2.f, -5.f, 16.f};
 
@@ -488,7 +586,7 @@ static void test_ex06() {
 
         cp.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET;
     }
 }
@@ -497,19 +595,21 @@ static void test_ex07() {
 
     std::cout << BIWHITE << "/* * * TEST EX07 (linear map, matrix multiplication) * * */\n\n" << RESET;
 
-    //test 1
+    //test 1 (SHOULD THROW EXCEPTION)
     try {
+        std::cout << "test 01:\n";
         Matrix<float> u {{4.0f, 2.2f, 6.0f}, {1.0f, 3.2f, -4.0f}};
         Vector<float> v {0.0f, 5.1f};
 
         Vector<float> result = u.mul_vec(v);
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
+        std::cout << "test 02:\n";
         Matrix<float> u {{4.0f, 2.2f, 6.0f}, {1.0f, 3.2f, -4.0f}};
         Vector<float> v {0.0f, -5.1f, 2.0f};
 
@@ -517,12 +617,13 @@ static void test_ex07() {
 
         result.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
+        std::cout << "test 03:\n";
         Matrix<float> u {{4.0f, 2.2f, 6.0f}, {1.0f, 3.2f, -4.0f}};
         Matrix<float> v {{0.0f, -5.1f, 2.0f}, {4.0f, -9.0f, 1.1f}, {4.5f, 2.0f, -6.0f}};
 
@@ -530,12 +631,13 @@ static void test_ex07() {
 
         result.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 4
     try {
+        std::cout << "test 04:\n";
         Matrix<float> u {{4.0f, 2.2f, 6.0f}, {1.0f, 3.2f, -4.0f}};
         Matrix<float> v {{0.0f, -5.1f}, {4.0f, -9.0f}, {4.5f, 2.0f}};
 
@@ -543,12 +645,13 @@ static void test_ex07() {
 
         result.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
-    //test 5
+    //test 5 (SHOULD THROW EXCEPTION)
     try {
+        std::cout << "test 05:\n";
         Matrix<float> u {{4.0f, 2.0f, 6.0f}, {1.0f, 3.0f, -4.0f}, {0.0f, -7.0f, 3.0f}};
         Matrix<float> v {{0.0f, -5.0f, 2.0f}, {4.0f, 8.0f, 1.0f}, {2.0f, 5.0f, 6.0f}, {0.0f, 2.0, -1.0f}};
 
@@ -556,12 +659,13 @@ static void test_ex07() {
 
         result.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 6
     try {
+        std::cout << "test 06:\n";
         Matrix<float> u {{4.0f, 2.0f, 6.0f}, {1.0f, 3.0f, -4.0f}, {0.0f, -7.0f, 3.0f}};
         Matrix<float> v {{0.0f, -5.0f}, {4.0f, 8.0f}, {2.0f, 5.0f}};
 
@@ -569,7 +673,7 @@ static void test_ex07() {
 
         result.print();
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
 }
@@ -578,48 +682,52 @@ static void test_ex08() {
 
     std::cout << BIWHITE << "/* * * TEST EX08 (trace) * * */\n\n" << RESET;
 
-    //test 1
+    //test 1 (SHOULD THROW EXCEPTION)
     try {
+        std::cout << "test 01:\n";
         Matrix<double> u {{1., 2., 3.}, {4., 5., 6.}};
 
         double tr = u.trace();
         std::cout << "Tr(" << tr << ")\n";
 
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
+        std::cout << "test 02:\n";
         Matrix<float> u {{1.0f, 0.0f}, {0.0f, 1.0f}};
 
         float tr = u.trace();
         std::cout << "Tr(" << tr << ")\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET;
     }
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
+        std::cout << "test 03:\n";
         Matrix<double> u {{2., -5., 0.}, {4., 3., 7.}, {-2, 3, 4}};
 
         double tr = u.trace();
         std::cout << "Tr(" << tr << ")\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET;
     }
     //test 4
     std::cout << BIWHITE << "――――― \n" << RESET;
     try {
+        std::cout << "test 04:\n";
         Matrix<double> u {{-2., -8., 4.}, {1., -23., 7.}, {0., 6., 4.}};
 
         double tr = u.trace();
         std::cout << "Tr(" << tr << ")\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET;
     }
 }
@@ -663,21 +771,22 @@ static void test_ex09() {
 
 static void test_ex10() {
 
-    std::cout << BICYAN << "testing negative zero\n";
-    std::cout << "print zero -> " << 0.0 << "\n";
-    std::cout << "print neg zero -> " << -0.0 << "\n";
-    std::cout << "print 1.0/0.0 -> " << (1.0/0.0) << "\n";
-    std::cout << "print 1.0/-0.0 -> " << (1.0/-0.0) << "\n";
-    std::cout << "print 0.0/-1.0 -> " << (0.0/-1.0) << "\n";
-    std::cout << "does -0.0 == 0.0 (reutrn 1 if true) -> " << (0.0 == -0.0) << "\n";
-    std::cout << "other test == " << "\n";
-    std::cout << (-0 - (2 * -0)) << "\n";
-    std::cout << (0.0 - (3.0 * 0.0)) << "\n";
-    std::cout << (0.0 - (-0.0 * 0.0)) << "\n";
-    std::cout << (0.0 - 0.0) << "\n";
-    std::cout << (-0.0 - -0.0) << "\n";
+    // std::cout << BICYAN << "testing negative zero\n";
+    // std::cout << "print zero -> " << 0.0 << "\n";
+    // std::cout << "print neg zero -> " << -0.0 << "\n";
+    // std::cout << "print 1.0/0.0 -> " << (1.0/0.0) << "\n";
+    // std::cout << "print 1.0/-0.0 -> " << (1.0/-0.0) << "\n";
+    // std::cout << "print 0.0/-1.0 -> " << (0.0/-1.0) << "\n";
+    // std::cout << "does -0.0 == 0.0 (reutrn 1 if true) -> " << (0.0 == -0.0) << "\n";
+    // std::cout << "other test == " << "\n";
+    // std::cout << (-0 - (2 * -0)) << "\n";
+    // std::cout << (0.0 - (3.0 * 0.0)) << "\n";
+    // std::cout << (0.0 - (-0.0 * 0.0)) << "\n";
+    // std::cout << (0.0 - 0.0) << "\n";
+    // std::cout << (-0.0 - -0.0) << "\n";
     std::cout << BIWHITE << "/* * * TEST EX10 (row echelon form REF/RREF) * * */\n\n" << RESET;
     //test 1
+    std::cout << "test 01:\n";
     Matrix<double> A {{0.001, 1., 4.}, {0., 4., 8.}, {0., 5., 4.}};
     std::cout << BIWHITE << "Print Matrix\n" << RESET;
     A.print();
@@ -689,6 +798,7 @@ static void test_ex10() {
 
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
+    std::cout << "test 02:\n";
     Matrix<float> B {{8.f, 5.f, -2.f, 4.f, 28.f}, {4.f, 2.5f, 20.f, 4.f, -4.f}, {8.f, 5.f, 1.f, 4.f, 17.f}};
     std::cout << BIWHITE << "Print Matrix\n" << RESET;
     B.print();
@@ -700,6 +810,7 @@ static void test_ex10() {
 
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
+    std::cout << "test 03:\n";
     Matrix<double> C {{1., 0., 0.}, {0., 1., 0.}, {0., 0., 1.}};
     std::cout << BIWHITE << "Print Matrix\n" << RESET;
     C.print();
@@ -711,6 +822,7 @@ static void test_ex10() {
 
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 4
+    std::cout << "test 04:\n";
     Matrix<double> D {{1., 2.}, {3., 4.}};
     std::cout << BIWHITE << "Print Matrix\n" << RESET;
     D.print();
@@ -722,6 +834,7 @@ static void test_ex10() {
 
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 5
+    std::cout << "test 05:\n";
     Matrix<double> E {{1., 2.}, {2., 4.}};
     std::cout << BIWHITE << "Print Matrix\n" << RESET;
     E.print();
@@ -733,6 +846,7 @@ static void test_ex10() {
 
     std::cout << BIWHITE << "――――― \n" << RESET;
     //test 6
+    std::cout << "test 06:\n";
     Matrix<double> F {{0., 2., 3.}, {0., 7., 0.}, {0., 5., 4.}};
     std::cout << BIWHITE << "Print Matrix\n" << RESET;
     F.print();
@@ -741,136 +855,209 @@ static void test_ex10() {
 
     std::cout << BIWHITE << "Print Reduce Row Echelon Form\n" << RESET;
     identityF.print();
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 7
+    std::cout << "test 07:\n";
+    Matrix<float>  G {{0.02f, 0.01f, 0.12f}, {0.022f, 0.4f, 0.1f}, {0.0112f, 0.025f, 0.01f}};
+    std::cout << BIWHITE << "Print Matrix\n" << RESET;
+    G.print();
 
+    Matrix<float> identityG = G.reduce_row_echelon();
+
+    std::cout << BIWHITE << "Print Reduce Row Echelon Form\n" << RESET;
+    identityG.print();
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 8
+    std::cout << "test 08:\n";
+    Matrix<float>  H {{0.1f, 0.3f}, {0.3f, 0.9f}};
+    std::cout << BIWHITE << "Print Matrix\n" << RESET;
+    H.print();
+
+    Matrix<float> refH = H.row_echelon();
+    Matrix<float> identityH = H.reduce_row_echelon();
+
+    std::cout << BIWHITE << "Print Reduce Row Echelon Form\n" << RESET;
+    identityH.print();
+    std::cout << BIWHITE << "Print Row Echelon Form\n" << RESET;
+    refH.print();
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 9
+    std::cout << "test 09:\n";
+    Matrix<float>  I {{0.1f, 0.2f, 0.3f}, {0.4f, 0.5f, 0.6f}, {0.7f, 0.8f, 0.9f}};
+    std::cout << BIWHITE << "Print Matrix\n" << RESET;
+    I.print();
+
+    Matrix<float> identityI = I.reduce_row_echelon();
+    Matrix<float> refI = I.row_echelon();
+
+    std::cout << BIWHITE << "Print Reduce Row Echelon Form\n" << RESET;
+    identityI.print();
+    std::cout << BIWHITE << "Print Row Echelon Form\n" << RESET;
+    refI.print();
 }
 
 static void test_ex11 () {
 
     std::cout << BIWHITE << "/* * * TEST EX11 (determinant) * * */\n\n" << RESET;
 
-    //test 1
+    //test 1 (SHOULD THROW EXCEPTION)
     try {
+        std::cout << "test 01:\n";
         Matrix<float> A {{4.3}, {1.0}};
 
         float det = A.determinant();
         std::cout << "det(" << det << ")\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 2
     try {
+        std::cout << "test 02:\n";
         Matrix<float> B {{4.3}};
 
         float det = B.determinant();
         std::cout << "det(" << det << ")\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
+        std::cout << "test 03:\n";
         Matrix<double> A {{1.0, -1.}, {-1., 1.}};
 
         double det = A.determinant();
         std::cout << "det(" << det << ")\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 4
     try {
+        std::cout << "test 04:\n";
         Matrix<double> A {{2., 0., 0.}, {0., 2., 0.}, {0., 0., 2.}};
 
         double det = A.determinant();
         std::cout << "det(" << det << ")\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 5
     try {
+        std::cout << "test 05:\n";
         Matrix<double> A {{8., 5., -2.}, {4., 7., 20.}, {7., 6., 1.}};
 
         double det = A.determinant();
         std::cout << "det(" << det << ")\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 6
     try {
+        std::cout << "test 06:\n";
         Matrix<double> A {{8., 5., -2., 4}, {4., 2.5, 20., 4.}, {8., 5., 1., 4.}, {28., -4., 17., 1.}};
 
         double det = A.determinant();
         std::cout << "det(" << det << ")\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 7
     try {
+        std::cout << "test 07:\n";
         Matrix<double> A {{8., 5., -2., 4, 7}, {4., 2.5, 20., 4., 0}, {8., 5., 1., 4., 4}, {28., -4., 17., 1., 18}, {4., 2., 1.3, 7., 78.}};
 
         double det = A.determinant();
         std::cout << "det(" << det << ")\n";
     }
-    catch (std::length_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << "\n" << RESET; 
     }
+        std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 8
+    try {
+        std::cout << "test 08:\n";
+        Matrix<float> L(100, 100, 1.f);
+
+        float det = L.determinant();
+        std::cout << "det(" << det << ")\n";
+    }
+    catch (std::exception &e) {
+        std::cout << RED << e.what() << "\n" << RESET; 
+    }
+
 }
 
 static void test_ex12() {
     std::cout << BIWHITE << "/* * * TEST EX12 (inverse matrix) * * */\n\n" << RESET;
 
-    //test 1
+    //test 1 (SHOULD THROW EXCEPTION)
     try {
+        std::cout << "test 01:\n";
         Matrix<double> A{{1., 2.}, {4., 2.}, {3., 8.}};
 
         A.inverse();
         A.print();
     }
-    catch (std::invalid_argument &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << RESET << "\n";
     }
-    //test 2
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    //test 2 (SHOULD THROW EXCEPTION)
     try {
-        Matrix<double> A{{0., 2.}, {0., 0.}};
+        std::cout << "test 02:\n";
+        Matrix<double> A{{1., 0.}, {0., 1.}};
 
-        A.inverse();
-        A.print();
+        Matrix<double> B = A.inverse();
+        B.print();
     }
-    catch (std::domain_error &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << RESET << "\n";
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 3
     try {
+        std::cout << "test 03:\n";
         Matrix<double> A{{1., 0., 0.}, {0., 1., 0.}, {0., 0., 1.}};
 
-        A.inverse();
-        A.print();
+        Matrix<double> B = A.inverse();
+        B.print();
     }
-    catch (std::invalid_argument &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << RESET << "\n";
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 4
     try {
+        std::cout << "test 04:\n";
         Matrix<double> A{{2., 0., 0.}, {0., 2., 0.}, {0., 0., 2.}};
 
-        A.inverse();
-        A.print();
+        Matrix<double> B = A.inverse();
+        B.print();
     }
-    catch (std::invalid_argument &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << RESET << "\n";
     }
+    std::cout << BIWHITE << "――――― \n" << RESET;
     //test 5
     try {
+        std::cout << "test 05:\n";
         Matrix<double> A {{8., 5., -2}, {4., 7., 20.}, {7., 6., 1.}};
 
         Matrix<double> B = A.inverse();
         B.print();
     }
-    catch (std::invalid_argument &e) {
+    catch (std::exception &e) {
         std::cout << RED << e.what() << RESET << "\n";
     }
 }
@@ -878,23 +1065,34 @@ static void test_ex12() {
 static void test_ex13() {
     std::cout << BIWHITE << "/* * * TEST EX13 (rank) * * */\n\n" << RESET;
 
+    std::cout << "test 01:\n";
     Matrix<double> A{{1., 0., 0.}, {0., 1., 0.}, {0., 0., 1.}};
 
+    std::cout << "A = \n";
+    A.print();
     size_t rank1 = A.rank();
 
-    std::cout << rank1 << "\n";
+    std::cout << "rank = " << rank1 << "\n";
 
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    std::cout << "test 02:\n";
     Matrix<double> B{{8., 5., -2}, {4., 7., 20.}, {21., 18., 7}};
 
+    std::cout << "B = \n";
+    B.print();
     size_t rank2 = B.rank();
 
-    std::cout << rank2 << "\n";
-
+    std::cout << "rank = " << rank2 << "\n";
+    
+    std::cout << BIWHITE << "――――― \n" << RESET;
+    std::cout << "test 03:\n";
     Matrix<double> C{{1., 2., 0., 0.}, {2., 4., 0., 0.}, {-1., 2., 1., 1.}};
 
+    std::cout << "C = \n";
+    C.print();
     size_t rank3 = C.rank();
 
-    std::cout << rank3 << "\n";
+    std::cout << "rank = " << rank3 << "\n";
 
 }
 
@@ -940,7 +1138,7 @@ int main(int ac, char **av)
 {
     if (ac != 2) {
         std::cerr << "Usage: ./matrix <exercise>\n"
-            << "Available: ex00, ex01, ..., ex05\n";
+            << "Available: ex00, ex01, ..., ex013\n";
         return (1);
     }
 

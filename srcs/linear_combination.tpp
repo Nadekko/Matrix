@@ -79,8 +79,8 @@ Matrix<K> linear_combination(const std::vector<Matrix<K>>& u, const std::vector<
         }
     }
 
-    int rows = u[0].rows;
-    int cols = u[0].cols;
+    size_t rows = u[0].rows;
+    size_t cols = u[0].cols;
 
     Matrix<K> result(rows, cols, K(0));
 
@@ -100,18 +100,17 @@ Matrix<K> linear_combination(const std::vector<Matrix<K>>& u, const std::vector<
 
 void print_linear_combination_info(const std::vector<Vector<float>>& u, const std::vector<float>& c)
 {
-    size_t rows = u[0].size();
-    size_t cols = u.size();
+    size_t dimension = u[0].size();
+    size_t vector_count = u.size();
 
-    std::cout << BIWHITE << "――――― \n";
-    std::cout << std::fixed << std::setprecision(1);
+    std::cout << std::fixed << std::setprecision(3);
     // display vectors
     std::cout << BIBLUE;
-    for (size_t j = 0; j < rows; j++) {
-        std::cout << "u[" << j << "] = ";  
-        for (size_t i = 0; i < cols; i++) {
-            std::cout << "|" << u[j].data[i] << "|";
-            if (i == cols - 1)
+    for (size_t i = 0; i < vector_count; i++) {
+        std::cout << "u[" << i << "] = ";
+        for (size_t j = 0; j < dimension; j++) {
+            std::cout << "|" << normalize_zero(u[i].data[j]) << "|";
+            if (j == dimension - 1)
                 std::cout << "\n";
             else
                 std::cout << ", ";
@@ -121,21 +120,24 @@ void print_linear_combination_info(const std::vector<Vector<float>>& u, const st
 
     // display coefs
     std::cout << BIYELLOW;
-    for (size_t i = 0; i < cols; i++) {
-        std::cout << "c[" << i << "] = " << c[i];
-        if (i != cols - 1)
+    for (size_t i = 0; i < vector_count; i++) {
+        std::cout << "c[" << i << "] = " << normalize_zero(c[i]);
+        if (i != vector_count - 1)
             std::cout << ", ";
     }
 
     std::cout << RESET << "\n\n";
+    std::cout << BIGREEN;
+    std::cout << "R = 2.f * u[0] + 7.f * u[1] + -1.f * u[2]\n\n" << RESET; 
+
 
     // display operations
-    for (size_t j = 0; j < rows; j++) {
+    for (size_t j = 0; j < dimension; j++) {
         std::cout << BIWHITE << "r[" << j << "] = ";
-        for (size_t i = 0; i < cols; i++) {
+        for (size_t i = 0; i < vector_count; i++) {
             if (i > 0) std::cout << " + ";
-            std::cout << BIYELLOW << c[i] <<  RESET << " * ";
-            std::cout << BIBLUE << " |" << u[i].data[j] << "|" << RESET;
+            std::cout << BIYELLOW << normalize_zero(c[i]) <<  RESET << " * ";
+            std::cout << BIBLUE << " |" << normalize_zero(u[i].data[j]) << "|" << RESET;
         }
     std::cout << "\n";
     }

@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <limits>
 #include "colors.hpp"
+#include "utils.hpp"
 
 template<typename K>
 struct Matrix
@@ -33,8 +34,8 @@ struct Matrix
                 data.push_back(val);
     };
     Matrix(size_t r, size_t c, const K& val) : rows(r), cols(c), data(r * c, val) {}
-    // Matrix(const Matrix<K>& other)
-    //     : rows(other.rows), cols(other.cols), data(other.data) {}
+    Matrix(const Matrix<K>& other)
+        : rows(other.rows), cols(other.cols), data(other.data) {}
 
     K& operator()(size_t i, size_t j) {
         if (i >= rows || j >= cols)
@@ -51,6 +52,7 @@ struct Matrix
     std::pair<size_t, size_t> shape() const { return {rows, cols}; }
     bool is_square() const { return rows == cols; }
     size_t size() const { return data.size(); }
+    K pythagore_impl() const { return sum_of_squares(data); }
     
     void print() const {
         for (size_t i = 0; i < rows; i++) {
@@ -60,7 +62,7 @@ struct Matrix
                 //     4, 5, 6
                 // stocker tel que A = 1., 2., 3., 4., 5., 6. (sur une seul ligne)
                 // i=1, j=1 : data[1*3+1] = 4 -> indice 4 : valeur 5
-                std::cout << std::setw(6) << std::fixed << std::setprecision(3) << (*this)(i, j) << std::setw(2) << " ";
+                std::cout << std::setw(6) << std::fixed << std::setprecision(3) << normalize_zero((*this)(i, j)) << std::setw(2) << " ";
             }
             std::cout << "]\n";
         }
@@ -69,7 +71,7 @@ struct Matrix
     void print_proj() const {
         for (size_t i = 0; i < rows; i++) {
             for (size_t j = 0; j < cols; j++) {
-                std::cout << std::fixed << std::setprecision(1) << (*this)(i, j);
+                std::cout << std::fixed << std::setprecision(3) << normalize_zero((*this)(i, j));
                 if (j != cols - 1)
                     std::cout << ", ";
             }
@@ -103,7 +105,7 @@ struct Matrix
 
     // EX03
     /*
-        A · B = ∑∑ A[i][j] × B[i][j]
+        A · B = ∑∑ A[i][j] x B[i][j]
         mesure l'alignement entre deux matrices
         Soit A = |1  2|  et B = |3  4|
                  |5  6|         |7  8|
@@ -111,7 +113,7 @@ struct Matrix
         A·B = (1*3) + (2*4) + (5*7) + (6*8)
         A·B = 3 + 8 + 35 + 48 = 94
 
-        A·B = ||A||_F × ||B||_F × cos(θ)  (interprétation géométrique générale)
+        A·B = ||A||_F x ||B||_F x cos(θ)  (interprétation géométrique générale)
         où θ désigne l'angle entre A et B dans l'espace des matrices.
 
         A·B > 0 --> θ est aigu, les matrices sont alignées.
@@ -140,56 +142,6 @@ struct Matrix
     }
 
     // EX04
-    //1-norm: ∥v∥1 (also called the Taxicab norm or Manhattan norm)
-    // max col
-    K norm_l1() const
-    {
-        K norm = K(0);
-        for (size_t j = 0; j < cols; j++) {
-            K col_sum = K(0);
-            for (size_t i = 0; i < rows; i++) {
-                col_sum += std::abs((*this)(i, j));
-            }
-            norm = std::max(col_sum, norm);
-        }
-        return (norm);
-    }
-
-    K pythagore_impl() const
-    {        
-        K sum = K(0);
-        
-        for (const K& val : data)
-            sum += val * val;
-        return (sum);
-    }
-
-    K method_sqrt(K val) const
-    {
-        K x = val / K(2);
-        K prev = K(0);
-
-        while (x != prev)
-        {
-            prev = x;
-            x = (x + (val / x)) / K(2);
-        }
-        return (x);
-    }
-
-    //Frobenius norm: ∥A∥_F = √(Σᵢⱼ aᵢⱼ²) 
-    // mesure la "grandeur" d'une matrice (distance/magnitude)
-    K norm_F() const
-    {
-        K norm = pythagore_impl();
-
-        // if the vector is zero, root is zero
-        if (norm == K(0)) { return (norm); }
-        
-        // méthode de Heron + méthode de Newton-Raphson
-        return (method_sqrt(norm));
-    }
-
     //∞-norm: ∥v∥∞ (also called the supremum norm)
     // max row
     K norm_inf() const
@@ -198,11 +150,33 @@ struct Matrix
         for (size_t i = 0; i < rows; i++) {
             K row_sum = K(0);
             for (size_t j = 0; j < cols; j++) {
-                row_sum += std::abs((*this)(i, j));
+                row_sum += my_abs((*this)(i, j));
             }
             norm = std::max(row_sum, norm);
         }
         return (norm);
+    }
+
+    //1-norm: ∥v∥1 (also called the Taxicab norm or Manhattan norm)
+    // max col
+    K norm_l1() const
+    {
+        K norm = K(0);
+        for (size_t j = 0; j < cols; j++) {
+            K col_sum = K(0);
+            for (size_t i = 0; i < rows; i++) {
+                col_sum += my_abs((*this)(i, j));
+            }
+            norm = std::max(col_sum, norm);
+        }
+        return (norm);
+    }
+
+    //Frobenius norm: ∥A∥_F = √(Σᵢⱼ aᵢⱼ²) 
+    // mesure la "grandeur" d'une matrice (distance/magnitude)
+    K norm_F() const
+    {
+        return std::pow(pythagore_impl(), K(0.5));
     }
 
     //EX07
@@ -222,7 +196,7 @@ struct Matrix
         for (size_t i = 0; i < rows; i++) {
             for (size_t j = 0; j < cols; j++) {
                 if constexpr (std::is_floating_point_v<K>)
-                    result.data[i] = fma((*this)(i, j), vec.data[j], result.data[i]);
+                    result.data[i] = std::fma((*this)(i, j), vec.data[j], result.data[i]);
                 else
                     result.data[i] += (*this)(i, j) * vec.data[j];
             }
@@ -247,7 +221,7 @@ struct Matrix
             for (size_t j = 0; j < cols; j++) {
                 for (size_t k = 0; k < mat.cols; k++) {
                     if constexpr (std::is_floating_point_v<K>)
-                        result.data[i * mat.cols + k] = std::fmaf((*this)(i, j), mat.data[j * mat.cols + k], result.data[i * mat.cols + k]);
+                        result.data[i * mat.cols + k] = std::fma((*this)(i, j), mat.data[j * mat.cols + k], result.data[i * mat.cols + k]);
                     else
                         result.data[i * mat.cols + k] += (*this)(i, j) * mat.data[j * mat.cols + k];
                 }
@@ -293,7 +267,7 @@ struct Matrix
             for (size_t j = 0; j < cols; j++) {
                 // i=0, j=1 : data[0*3+1] = 2   -> result[1][0] = result[1*2+0] = 2
                 // i=1, j=0 : data[1*3+0] = 4   -> result[0][1] = result[0*2+1] = 4
-                result.data[j * rows + i] = data[i * cols + j];
+                result.data[j * rows + i] = (*this)(i, j);
             }
         }
         return (result);
@@ -328,7 +302,7 @@ struct Matrix
             // if not find increment to the next col
             while (lead < cols) {
                 pivot_row = i;
-                while (pivot_row < rows && result(pivot_row, lead) == K(0)) {
+                while (pivot_row < rows && is_zero(result(pivot_row, lead))) {
                     pivot_row++;
                 }
                 if (pivot_row == rows) {
@@ -349,9 +323,9 @@ struct Matrix
 
             //normalize pivot row (make pivot row == 1)
             K div = result(i, lead);
-            if (div != K(0) && div != K(1)) {
+            if (!is_zero(div) && div != K(1)) {
                 for (size_t j = 0; j < cols; j++) {
-                    if (result(i, j) == K(0))
+                    if (is_zero(result(i, j)))
                         continue ;
                     result(i, j) /= div;
                 }
@@ -390,7 +364,7 @@ struct Matrix
             // if not find increment to the next col
             while (lead < cols) {
                 pivot_row = i;
-                while (pivot_row < rows && result(pivot_row, lead) == K(0)) {
+                while (pivot_row < rows && is_zero(result(pivot_row, lead))) {
                     pivot_row++;
                 }
                 if (pivot_row == rows) {
@@ -411,9 +385,9 @@ struct Matrix
 
             //normalize pivot row (make pivot row == 1)
             K div = result(i, lead);
-            if (div != K(0) && div != K(1)) {
+            if (!is_zero(div) && div != K(1)) {
                 for (size_t j = 0; j < cols; j++) {
-                    if (result(i, j) == K(0))
+                    if (is_zero(result(i, j)))
                         continue ;
                     result(i, j) /= div;
                 }
@@ -467,7 +441,7 @@ struct Matrix
             for (size_t i = 0; i < n ; i++) {
 
                 pivot = i;
-                while (pivot < n && result(pivot, i) == K(0)) {
+                while (pivot < n && is_zero(result(pivot, i))) {
                     pivot++;
                 }
                 if (pivot == n) {
@@ -486,6 +460,8 @@ struct Matrix
                     factor = result(j, i) / result(i, i);
                     for (size_t k = i; k < n; k++) {
                         result(j, k) -= factor * result(i, k);
+                        if (is_zero(result(j, k)))
+                            result(j, k) = K(0);
                     }
                 }
             }
@@ -494,29 +470,42 @@ struct Matrix
     }
 
     //EX12
-    // une matrice se dit inversible tel que  A−1A = AA-1 = I (son identité)
+    // une matrice se dit inversible tel que  A-1A = AA-1 = I (son identité)
     // A devient I (A-1A = I)
     // I divent A-1 (A-1I = A-1)
     Matrix<K> inverse() const
     {
-        size_t c_aug = 2 * cols; 
-        Matrix<K> m_aug(rows, c_aug, K(0));
-        Matrix<K> temp = *this;
-        Matrix<K> result(rows, cols, K(0));
         if (!is_square())
             throw std::invalid_argument("Error: matrix must be square");
-        else if (determinant() == 0)
-            throw std::domain_error("Error: a matrix with a det(A) == 0, is not inversible");
+        
+        size_t c_aug = 2 * cols;
+        // init matrix augmenté fill with 0
+        Matrix<K> m_aug(rows, c_aug, K(0));
+
+        // fill left side with current object
         for (size_t i = 0; i < rows; i++) {
             for (size_t j = 0; j < cols; j++) {
-                m_aug(i, j) = temp(i, j);
+                m_aug(i, j) = (*this)(i, j);
             }
-            m_aug.data[i * c_aug + cols + i] = K(1);
+            // make diagonal of 1 on right side
+            m_aug.data[i * c_aug + cols + i] = K(1.);
         }
+
+        //appliqué élimination de Gauss-Jordan sur la matrice augmenté
         Matrix<K> rref = m_aug.reduce_row_echelon();
+        //une matrice singulière possède un déterminant égal à zéro
+        //ce qui signifie que ses colonnes ou ses lignes sont linéairement dépendantes.
+        for (size_t i = 0; i < rows; i++) {
+            if (rref(i, i) != K(1))
+                throw std::domain_error("Error : matrix is singular");
+        }
+        
+        Matrix<K> result(rows, cols, K(0));
+        // récupérer la partie droit de la matrice augmenté
         for (size_t k = 0; k < rows; k++) {
             for (size_t l = 0; l < cols; l++) {
-                // k = 2 * 6 + 1 + l = 3 = 16
+                // k = 2, l = 3
+                // 2 * 6 + 1 + 3 = 16
                 // 0  1  2  | 3  4  5
                 // 6  7  8  | 9  10 11
                 // 12 13 14 | 15 (16) 17
@@ -537,6 +526,7 @@ struct Matrix
 
         Matrix<K> temp = row_echelon();
         size_t rank = 0;
+        temp.print();
         
         for (size_t i = 0; i < rows; i++) {
             for (size_t j = 0; j < cols; j++) {

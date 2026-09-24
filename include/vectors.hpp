@@ -8,6 +8,7 @@
 #include <cmath>
 #include <algorithm>
 #include "colors.hpp"
+#include "utils.hpp"
 
 // ***** VECTORS *****//
 template<typename K>
@@ -23,13 +24,14 @@ struct Vector
     Vector(size_t n, K val) : data(n, val) {}
     
     size_t size() const { return data.size(); }
+    K pythagore_impl() const { return sum_of_squares(data); }
     // void set_arccos(K arcc) const { arccos = arcc; }
     // K get_arccos() const { return (arccos); }
     
     void    print() const {
-        std::cout << std::fixed << std::setprecision(2);
+        std::cout << std::fixed << std::setprecision(3);
         for (const K& val : data)
-        std::cout << "[" << val << "]\n";
+        std::cout << "[" << normalize_zero(val) << "]\n";
     };
 
     // combiner ou comparer des "quantitées" qui parte du même repère
@@ -66,7 +68,7 @@ struct Vector
         Soit u = (2, 3, 7) et v = (8, 1, 6)
         u·v = (2*8) + (3*1) + (7*6)
 
-        u·v = ||u|| × ||v|| × cos(θ)  (interprétation géométrique générale)
+        u·v = ||u|| x ||v|| x cos(θ)  (interprétation géométrique générale)
         où θ designe l'angle entre u et v.
 
         u·v > 0 --> θ est aigu.
@@ -94,17 +96,7 @@ struct Vector
         return (result);
     }
 
-    //l1-norm: ∥v∥1 (also called the Taxicab norm or Manhattan norm)
-    // distance de marche sur une grille
-    K norm_l1() const
-    {
-        K norm = K(0);
-        
-        for (const K& val : data)
-            norm += std::abs(val);
-        return (norm);
-    }
-
+    //EX04
     //∞-norm: ∥v∥∞ (also called the supremum norm)
     // le plus grand éléments en valeur abs
     K norm_inf() const
@@ -112,58 +104,28 @@ struct Vector
         K norm = K(0);
         
         for (const K& val : data)
-            norm = std::max(std::abs(val), norm);
+            norm = std::max(my_abs(val), norm);
         return (norm);
     }
 
-    K pythagore_impl() const
-    {        
-        K sum = K(0);
+    //l1-norm: ∥v∥1 (also called the Taxicab norm or Manhattan norm)
+    // distance de marche sur une grille
+    K norm_l1() const
+    {
+        K norm = K(0);
         
         for (const K& val : data)
-        sum += val * val;
-        return (sum);
+            norm += my_abs(val);
+        return (norm);
     }
 
-    /*
-        méthode de Heron + méthode de Newton-Raphson
-
-        norm = 25
-        x₀ = 25/2 = 12.5
-
-        It1 : x₁ = (12.5 + 25/12.5) / 2 = (12.5 + 2) / 2 = 7.25
-        It2 : x₂ = (7.25 + 25/7.25) / 2 = (7.25 + 3.45) / 2 = 5.35
-        It3 : x₃ = (5.35 + 25/5.35) / 2 = (5.35 + 4.67) / 2 = 5.01
-        It4 : x₄ = (5.01 + 25/5.01) / 2 ≈ 5.0
-        It5 : x₅ = (5.0 + 25/5.0) / 2 = (5.0 + 5.0) / 2 = 5.0
-
-        x₅ = x₄ = 5.0
-    */
-    K method_sqrt(K val) const
-    {
-        K x = val / K(2);
-        K prev = K(0);
-
-        while (x != prev)
-        {
-            prev = x;
-            x = (x + (val / x)) / K(2);
-        }
-        return (x);
-    }
-    
     //l2-norm: ∥v∥ or ∥v∥2 (also called the Euclidean norm)
     // distance à vol d'oiseau
     // u = [3, 4]
     // ||u|| = √(3² + 4²) = √25 = 5
     K norm_l2() const
     {
-        K norm= pythagore_impl();
-
-        // if the vector is zero, root is zero
-        if (norm == K(0)) { return (norm); }
-        
-        // méthode de Heron + méthode de Newton-Raphson
-        return (method_sqrt(norm));
+        //élever un nombre à la puissance 1/2 revient à prendre sa racine carrée
+        return std::pow(pythagore_impl(), K(0.5));
     }
 };
